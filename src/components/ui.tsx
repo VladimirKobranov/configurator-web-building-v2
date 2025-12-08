@@ -1,8 +1,13 @@
 import { useAppStore } from "@/store";
 
 export default function UiPanel() {
-  const { autoRotateSpeed, setAutoRotateSpeed, camProps, setCamProps } =
-    useAppStore();
+  const {
+    autoRotateSpeed,
+    setAutoRotateSpeed,
+    camProps,
+    setCamProps,
+    sendWorkerMessage,
+  } = useAppStore();
 
   const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
 
@@ -37,6 +42,8 @@ export default function UiPanel() {
           onChange={(e) => setCamProps({ fov: +e.target.value })}
         />
       </div>
+
+      <button onClick={() => sendWorkerMessage("calculate")}>Build</button>
     </div>
   );
 }

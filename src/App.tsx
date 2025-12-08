@@ -1,31 +1,14 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef, useState, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 
 import UiPanel from "@/components/ui";
 
 import { useAppStore } from "./store";
+import CameraDebugger from "./components/camera_debugger";
 import { gridConfig, orbitControlsConfig } from "./config/config";
-
-function CameraDebugger() {
-  const setCamProps = useAppStore((s) => s.setCamProps);
-
-  const { camera } = useThree();
-
-  useFrame(() => {
-    const pos = camera.position;
-    const rot = camera.rotation;
-
-    setCamProps({
-      position: [pos.x, pos.y, pos.z],
-      rotation: [rot.x, rot.y, rot.z],
-    });
-  });
-
-  return null;
-}
 
 function Box(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -50,6 +33,14 @@ function Box(props: ThreeElements["mesh"]) {
 export default function App() {
   const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);
   const camProps = useAppStore((s) => s.camProps);
+
+  const initWorker = useAppStore((s) => s.initWorker);
+  const cleanupWorker = useAppStore((s) => s.cleanupWorker);
+
+  useEffect(() => {
+    initWorker();
+    return () => cleanupWorker();
+  }, [initWorker, cleanupWorker]);
 
   return (
     <div className="w-dvw h-dvh p-4">

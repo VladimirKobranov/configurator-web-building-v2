@@ -13,17 +13,29 @@ interface CameraProps {
 interface AppState {
   autoRotateSpeed: number;
   camProps: CameraProps;
+  logicWorker: Worker | null;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
+  initWorker: () => void;
+  cleanupWorker: () => void;
+  sendWorkerMessage: (payload?: string) => void;
 }
 
-export const useAppStore = create<AppState>()((set) => ({
+const createLogicWorker = () => {
+  const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
+    type: "module",
+  });
+  return worker;
+};
+
+export const useAppStore = create<AppState>()((set, get) => ({
   autoRotateSpeed: 0,
   camProps: {
     position: cameraConfig.position,
     rotation: cameraConfig.rotation,
     fov: cameraConfig.fov,
   },
+  logicWorker: null,
 
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -34,4 +46,26 @@ export const useAppStore = create<AppState>()((set) => ({
         ...props,
       },
     })),
+
+  initWorker: () => {
+    const state = get();
+    if (!state.logicWorker) {
+      set({ logicWorker: createLogicWorker() });
+    }
+  },
+
+  cleanupWorker: () => {
+    const state = get();
+    if (state.logicWorker) {
+      state.logicWorker.terminate();
+      set({ logicWorker: null });
+    }
+  },
+
+  sendWorkerMessage: (payload?: string) => {
+    const state = get();
+    if (state.logicWorker) {
+      state.logicWorker.postMessage({ payload });
+    }
+  },
 }));
