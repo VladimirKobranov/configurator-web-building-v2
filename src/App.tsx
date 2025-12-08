@@ -3,6 +3,18 @@ import { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
 
+import { useBearStore } from "./store";
+
+function BearCounter() {
+  // Select only 'bears' to avoid unnecessary re-renders
+  const bears = useBearStore((s) => s.bears);
+  return (
+    <h1 className="z-100 text-white fixed top-10 left-10">
+      {bears} bears around
+    </h1>
+  );
+}
+
 function Box(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const [hovered, setHover] = useState(false);
@@ -39,6 +51,8 @@ export default function App() {
         <Box position={[-1.2, 0, 0]} />
         <Box position={[1.2, 0, 0]} />
       </Canvas>
+
+      <BearCounter />
     </div>
   );
 }
