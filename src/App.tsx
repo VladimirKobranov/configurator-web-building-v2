@@ -4,7 +4,10 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 
+import UiPanel from "@/components/ui";
+
 import { useAppStore } from "./store";
+import { gridConfig, orbitControlsConfig } from "./config/config";
 
 function Box(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -28,23 +31,6 @@ function Box(props: ThreeElements["mesh"]) {
 
 export default function App() {
   const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);
-  const setAutoRotateSpeed = useAppStore((s) => s.setAutoRotateSpeed);
-
-  function BearCounter() {
-    return (
-      <div className="z-100 text-white fixed top-10 left-10">
-        <h1>{autoRotateSpeed} bears around</h1>
-        <input
-          type="range"
-          min={0}
-          max={5}
-          step={0.25}
-          defaultValue={autoRotateSpeed}
-          onChange={(e) => setAutoRotateSpeed(Number(e.target.value))}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="w-dvw h-dvh p-4">
@@ -61,34 +47,16 @@ export default function App() {
         <Box position={[-1.2, 0, 0]} />
         <Box position={[1.2, 0, 0]} />
 
-        <Grid
-          cellSize={0.5}
-          cellThickness={1}
-          cellColor="#6f6f6f"
-          sectionSize={2}
-          sectionThickness={1.5}
-          sectionColor="#9d4b4b"
-          fadeDistance={50}
-          fadeStrength={5}
-          followCamera={false}
-          infiniteGrid={true}
-        />
+        <Grid {...gridConfig} />
 
         <PerspectiveCamera makeDefault fov={40} />
         <OrbitControls
-          minPolarAngle={0}
-          maxPolarAngle={Math.PI / 2}
-          target={[-0.02, 0.55, -0.28]}
-          minDistance={3}
-          maxDistance={10}
-          enableDamping
-          makeDefault
-          autoRotate
+          {...orbitControlsConfig}
           autoRotateSpeed={autoRotateSpeed}
         />
       </Canvas>
 
-      <BearCounter />
+      <UiPanel />
     </div>
   );
 }
