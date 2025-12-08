@@ -1,20 +1,42 @@
 import { useAppStore } from "@/store";
 
 export default function UiPanel() {
-  const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);
-  const setAutoRotateSpeed = useAppStore((s) => s.setAutoRotateSpeed);
+  const { autoRotateSpeed, setAutoRotateSpeed, camProps, setCamProps } =
+    useAppStore();
+
+  const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
 
   return (
     <div className="z-100 text-white fixed top-10 left-10">
-      <h1>{autoRotateSpeed} bears around</h1>
-      <input
-        type="range"
-        min={0}
-        max={5}
-        step={0.25}
-        defaultValue={autoRotateSpeed}
-        onChange={(e) => setAutoRotateSpeed(Number(e.target.value))}
-      />
+      <div className="mb-4">
+        <h1>Auto Rotate speed: {autoRotateSpeed}</h1>
+        <input
+          type="range"
+          min={0}
+          max={5}
+          step={0.25}
+          value={autoRotateSpeed}
+          onChange={(e) => setAutoRotateSpeed(+e.target.value)}
+        />
+      </div>
+
+      <div>
+        <h2>Camera props:</h2>
+        <ul>
+          <li>position: [{fmt(camProps.position)}]</li>
+          <li>rotation: [{fmt(camProps.rotation)}]</li>
+          <li>fov: {camProps.fov.toFixed(3)}</li>
+        </ul>
+
+        <input
+          type="range"
+          min={20}
+          max={120}
+          step={1}
+          value={camProps.fov}
+          onChange={(e) => setCamProps({ fov: +e.target.value })}
+        />
+      </div>
     </div>
   );
 }

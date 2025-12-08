@@ -1,3 +1,9 @@
+export const cameraConfig = {
+  fov: 40,
+  position: [0, 5, 10] as [number, number, number],
+  rotation: [0, 0, 0] as [number, number, number],
+};
+
 export const orbitControlsConfig = {
   minPolarAngle: 0,
   maxPolarAngle: Math.PI / 2,
