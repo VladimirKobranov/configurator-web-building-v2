@@ -1,13 +1,28 @@
 onmessage = async (event) => {
   const { payload } = event.data;
 
-  await new Promise((resolve) => setTimeout(resolve, 2000)); // for tests
+  console.log("worker: received payload", payload);
 
-  console.log("worker: ", payload);
-  const house = buildHouse(100, 100, 100);
+  // await new Promise((resolve) => setTimeout(resolve, 2000)); // for tests
+
+  // Use actual values from payload or defaults
+  const sizeX = payload?.sizeX || 10;
+  const sizeY = payload?.sizeY || 10;
+  const sizeZ = payload?.sizeZ || 10;
+
+  console.log(
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}`
+  );
+  const house = buildHouse(sizeX, sizeY, sizeZ);
   console.log("worker: house built", house);
-};
 
+  // Send the result back to the main thread
+  postMessage({
+    status: "success",
+    result: house,
+    dimensions: { sizeX, sizeY, sizeZ },
+  });
+};
 
 function generateRoof(sizeX: number, sizeZ: number, heightY: number) {
   const tiles = [];

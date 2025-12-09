@@ -7,6 +7,8 @@ export default function UiPanel() {
     camProps,
     setCamProps,
     sendWorkerMessage,
+    buildingProps,
+    setBuildingProps,
   } = useAppStore();
 
   const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
@@ -43,7 +45,46 @@ export default function UiPanel() {
         />
       </div>
 
-      <button onClick={() => sendWorkerMessage("calculate")}>Build</button>
+      <div>
+        <h2>Building props:</h2>
+        <ul>
+          <li>sizeX: {buildingProps?.sizeX}</li>
+          <li>
+            <input
+              type="range"
+              min={1}
+              max={50}
+              step={1}
+              value={buildingProps?.sizeX || 0}
+              onChange={(e) => setBuildingProps({ sizeX: +e.target.value })}
+            />
+          </li>
+          <li>sizeY: {buildingProps?.sizeY}</li>
+          <li>
+            <input
+              type="range"
+              min={1}
+              max={50}
+              step={1}
+              value={buildingProps?.sizeY || 0}
+              onChange={(e) => setBuildingProps({ sizeY: +e.target.value })}
+            />
+          </li>
+          <li>sizeZ: {buildingProps?.sizeZ}</li>
+          <li>
+            <input
+              type="range"
+              min={1}
+              max={50}
+              step={1}
+              value={buildingProps?.sizeZ || 0}
+              onChange={(e) => setBuildingProps({ sizeZ: +e.target.value })}
+            />
+          </li>
+        </ul>
+      </div>
+
+      <button onClick={() => sendWorkerMessage(buildingProps)}>Build</button>
     </div>
   );
 }

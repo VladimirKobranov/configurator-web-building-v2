@@ -30,3 +30,9 @@ export const gridConfig = {
   followCamera: false,
   infiniteGrid: true,
 };
+
+export const buildingConfig = {
+  sizeX: 10,
+  sizeY: 6,
+  sizeZ: 8,
+};
