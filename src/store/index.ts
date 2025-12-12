@@ -109,6 +109,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
           set({
             building: flattenedBuilding,
             offsets: [offsetX, offsetY, offsetZ],
+            isScattered: true,
           });
           console.log("Building data stored:", flattenedBuilding);
         }
