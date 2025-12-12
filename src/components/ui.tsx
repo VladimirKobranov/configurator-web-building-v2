@@ -9,6 +9,8 @@ export default function UiPanel() {
     sendWorkerMessage,
     buildingProps,
     setBuildingProps,
+    building,
+    setScattered,
   } = useAppStore();
 
   const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
@@ -84,7 +86,21 @@ export default function UiPanel() {
         </ul>
       </div>
 
-      <button onClick={() => sendWorkerMessage(buildingProps)}>Build</button>
+      <div className="flex gap-2">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => sendWorkerMessage(buildingProps)}
+        >
+          Build
+        </button>
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          onClick={() => setScattered(true)}
+          disabled={!building || building.length === 0}
+        >
+          Scatter
+        </button>
+      </div>
     </div>
   );
 }

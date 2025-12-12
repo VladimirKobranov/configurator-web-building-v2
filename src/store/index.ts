@@ -21,15 +21,19 @@ interface AppState {
   camProps: CameraProps;
   logicWorker: Worker | null;
   buildingProps?: BuildingProps;
+  building: any[];
+  isScattered: boolean;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
   setBuildingProps: (props: Partial<BuildingProps>) => void;
+  setBuilding: (building: any[]) => void;
+  setScattered: (scattered: boolean) => void;
   initWorker: () => void;
   cleanupWorker: () => void;
   sendWorkerMessage: (payload?: BuildingProps) => void;
 }
 
-const createLogicWorker = () => {
+const createLogicWorker = (onMessage: (data: any) => void) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",
   });
@@ -37,7 +41,7 @@ const createLogicWorker = () => {
   // Listen for messages from the worker
   worker.onmessage = (event) => {
     console.log("Received from worker:", event.data);
-    // Here you can update the store or trigger other actions with the result
+    onMessage(event.data);
   };
 
   worker.onerror = (error) => {
@@ -56,6 +60,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
   logicWorker: null,
   buildingProps: buildingConfig,
+  building: [],
+  isScattered: false,
 
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -75,10 +81,27 @@ export const useAppStore = create<AppState>()((set, get) => ({
       } as BuildingProps,
     })),
 
+  setBuilding: (building) => set({ building }),
+  setScattered: (isScattered) => set({ isScattered }),
+
   initWorker: () => {
     const state = get();
     if (!state.logicWorker) {
-      set({ logicWorker: createLogicWorker() });
+      const worker = createLogicWorker((data) => {
+        if (data.status === "success" && data.result) {
+          const { roof, north, south, west, east } = data.result;
+          const flattenedBuilding = [
+            ...(roof || []),
+            ...(north || []),
+            ...(south || []),
+            ...(west || []),
+            ...(east || []),
+          ];
+          set({ building: flattenedBuilding });
+          console.log("Building data stored:", flattenedBuilding);
+        }
+      });
+      set({ logicWorker: worker });
     }
   },
 
@@ -93,6 +116,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
   sendWorkerMessage: (payload?: BuildingProps) => {
     const state = get();
     if (state.logicWorker) {
+      // Reset scattered state when new build is requested
+      set({ isScattered: false, building: [] });
       state.logicWorker.postMessage({ payload });
     }
   },

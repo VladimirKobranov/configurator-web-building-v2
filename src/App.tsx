@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { useRef, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 
@@ -12,20 +12,10 @@ import { gridConfig, orbitControlsConfig } from "./config/config";
 
 function Box(props: ThreeElements["mesh"]) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-  useFrame((_state, delta) => (meshRef.current.rotation.x += delta));
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
+    <mesh {...props} ref={meshRef}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "#2f74c0"} />
+      <meshStandardMaterial color={"gray"} />
     </mesh>
   );
 }
@@ -36,6 +26,8 @@ export default function App() {
 
   const initWorker = useAppStore((s) => s.initWorker);
   const cleanupWorker = useAppStore((s) => s.cleanupWorker);
+  const building = useAppStore((s) => s.building);
+  const isScattered = useAppStore((s) => s.isScattered);
 
   useEffect(() => {
     initWorker();
@@ -54,8 +46,8 @@ export default function App() {
           intensity={Math.PI}
         />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
+        {/* <Box position={[-1.2, 0, 0]} /> */}
+        {/* <Box position={[1.2, 0, 0]} /> */}
 
         <Grid {...gridConfig} />
 
@@ -67,8 +59,21 @@ export default function App() {
         <OrbitControls
           {...orbitControlsConfig}
           autoRotateSpeed={autoRotateSpeed}
+          maxDistance={20}
+          minDistance={1}
         />
         <CameraDebugger />
+        {isScattered &&
+          building.map((item, idx) => (
+            <Box
+              key={idx}
+              position={[
+                item.position.x * 1.1,
+                item.position.y * 1.1,
+                item.position.z * 1.1,
+              ]}
+            />
+          ))}
       </Canvas>
 
       <UiPanel />
