@@ -1,5 +1,5 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
 
 export default function CameraDebugger() {
   const setCamProps = useAppStore((s) => s.setCamProps);

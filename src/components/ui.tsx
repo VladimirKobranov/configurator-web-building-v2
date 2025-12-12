@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store";
 
-export default function UiPanel() {
+export default function Ui() {
   const {
     autoRotateSpeed,
     setAutoRotateSpeed,

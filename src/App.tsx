@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import UiPanel from "@/components/ui";
+import Ui from "@/components/ui";
 import Scene from "@/components/scene";
-import { useAppStore } from "./store";
+import { useAppStore } from "@/store";
 
 export default function App() {
   const initWorker = useAppStore((s) => s.initWorker);
@@ -15,7 +15,7 @@ export default function App() {
   return (
     <div className="w-dvw h-dvh p-4">
       <Scene />
-      <UiPanel />
+      <Ui />
     </div>
   );
 }

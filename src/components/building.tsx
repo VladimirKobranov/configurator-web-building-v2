@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useRef, useEffect } from "react";
 
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
 
 const tempObject = new THREE.Object3D();
 

@@ -1,6 +1,6 @@
 // store.ts
 import { create } from "zustand";
-import { cameraConfig, buildingConfig } from "../config/config";
+import { cameraConfig, buildingConfig } from "@/config/config";
 
 type Vec3 = [number, number, number];
 
