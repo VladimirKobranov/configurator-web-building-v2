@@ -23,6 +23,7 @@ interface AppState {
   buildingProps?: BuildingProps;
   building: any[];
   isScattered: boolean;
+  offsets: [number, number, number];
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
   setBuildingProps: (props: Partial<BuildingProps>) => void;
@@ -62,6 +63,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
   buildingProps: buildingConfig,
   building: [],
   isScattered: false,
+  offsets: [0, 0, 0],
 
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -90,6 +92,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
       const worker = createLogicWorker((data) => {
         if (data.status === "success" && data.result) {
           const { roof, north, south, west, east } = data.result;
+          const { sizeX, sizeZ } = data.dimensions;
+
           const flattenedBuilding = [
             ...(roof || []),
             ...(north || []),
@@ -97,7 +101,15 @@ export const useAppStore = create<AppState>()((set, get) => ({
             ...(west || []),
             ...(east || []),
           ];
-          set({ building: flattenedBuilding });
+
+          const offsetX = -((sizeX - 1) * 1.1) / 2;
+          const offsetZ = -((sizeZ - 1) * 1.1) / 2;
+          const offsetY = 0.5;
+
+          set({
+            building: flattenedBuilding,
+            offsets: [offsetX, offsetY, offsetZ],
+          });
           console.log("Building data stored:", flattenedBuilding);
         }
       });
