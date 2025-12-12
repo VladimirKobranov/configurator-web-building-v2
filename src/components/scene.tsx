@@ -11,6 +11,7 @@ import { useAppStore } from "../store";
 import { gridConfig, orbitControlsConfig } from "../config/config";
 import CameraDebugger from "./camera_debugger";
 import { InstancedBuilding } from "./building";
+import ShadowCatcher from "./shadow_catcher";
 
 export default function Scene() {
   const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);
@@ -29,7 +30,7 @@ export default function Scene() {
       <Environment preset="city" />
       <directionalLight
         position={[10, 10, 10]}
-        intensity={1}
+        intensity={5}
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
@@ -44,19 +45,10 @@ export default function Scene() {
       <OrbitControls
         {...orbitControlsConfig}
         autoRotateSpeed={autoRotateSpeed}
-        maxDistance={20}
-        minDistance={1}
       />
       {isScattered && <InstancedBuilding data={building} />}
 
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.01, 0]}
-        receiveShadow
-      >
-        <planeGeometry args={[100, 100]} />
-        <shadowMaterial transparent opacity={0.4} />
-      </mesh>
+      <ShadowCatcher />
 
       <CameraDebugger />
     </Canvas>

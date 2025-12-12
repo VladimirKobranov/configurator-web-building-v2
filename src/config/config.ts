@@ -8,8 +8,8 @@ export const orbitControlsConfig = {
   minPolarAngle: 0,
   maxPolarAngle: Math.PI / 2,
   target: [-0.02, 0.55, -0.28] as [number, number, number],
-  minDistance: 3,
-  maxDistance: 10,
+  minDistance: 1,
+  maxDistance: 20,
   enableDamping: true,
   makeDefault: true,
   autoRotate: true,
@@ -32,7 +32,7 @@ export const gridConfig = {
 };
 
 export const buildingConfig = {
-  sizeX: 10,
-  sizeY: 6,
-  sizeZ: 8,
+  sizeX: 4,
+  sizeY: 5,
+  sizeZ: 3,
 };
