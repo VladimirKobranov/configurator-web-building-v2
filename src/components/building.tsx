@@ -11,10 +11,13 @@ const tempObject = new THREE.Object3D();
 export function InstancedBuilding({ data }: { data: any[] }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!);
   const offsets = useAppStore((s) => s.offsets);
+  const buildingProps = useAppStore((s) => s.buildingProps);
   const { nodes, materials } = useGLTF(buildingUrl) as any;
 
   useEffect(() => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !buildingProps) return;
+
+    const { sizeX, sizeZ } = buildingProps;
 
     data.forEach((item, i) => {
       tempObject.position.set(
@@ -22,11 +25,25 @@ export function InstancedBuilding({ data }: { data: any[] }) {
         item.position.y * 1.1 + offsets[1],
         item.position.z * 1.1 + offsets[2]
       );
+
+      let rotationY = 0;
+      if (item.position.z === 0) {
+        rotationY = -Math.PI / 2;
+      } else if (item.position.z === sizeZ - 1) {
+        rotationY = Math.PI / 2;
+      } else if (item.position.x === 0) {
+        rotationY = 0;
+      } else if (item.position.x === sizeX - 1) {
+        rotationY = Math.PI;
+      }
+
+      tempObject.rotation.set(0, rotationY, 0);
+
       tempObject.updateMatrix();
       meshRef.current.setMatrixAt(i, tempObject.matrix);
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [data, offsets]);
+  }, [data, offsets, buildingProps]);
 
   return (
     <instancedMesh
