@@ -14,6 +14,7 @@ interface BuildingProps {
   sizeX: number;
   sizeY: number;
   sizeZ: number;
+  offset: number;
 }
 
 interface AppState {
@@ -91,27 +92,20 @@ export const useAppStore = create<AppState>()((set, get) => ({
     if (!state.logicWorker) {
       const worker = createLogicWorker((data) => {
         if (data.status === "success" && data.result) {
-          const { roof, north, south, west, east } = data.result;
           const { sizeX, sizeZ } = data.dimensions;
+          const { offset } = get().buildingProps || { offset: 0.1 };
+          const spacing = 1 + offset;
 
-          const flattenedBuilding = [
-            ...(roof || []),
-            ...(north || []),
-            ...(south || []),
-            ...(west || []),
-            ...(east || []),
-          ];
-
-          const offsetX = -((sizeX - 1) * 1.1) / 2;
-          const offsetZ = -((sizeZ - 1) * 1.1) / 2;
+          const offsetX = -((sizeX - 1) * spacing) / 2;
+          const offsetZ = -((sizeZ - 1) * spacing) / 2;
           const offsetY = 0.5;
 
           set({
-            building: flattenedBuilding,
+            building: data.result,
             offsets: [offsetX, offsetY, offsetZ],
             isScattered: true,
           });
-          console.log("Building data stored:", flattenedBuilding);
+          console.log("Building data stored:", data.result);
         }
       });
       set({ logicWorker: worker });

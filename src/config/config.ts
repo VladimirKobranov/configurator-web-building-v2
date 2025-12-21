@@ -35,4 +35,5 @@ export const buildingConfig = {
   sizeX: 4,
   sizeY: 5,
   sizeZ: 3,
+  offset: 0.1,
 };

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useAppStore } from "@/store";
 
@@ -9,49 +9,92 @@ import buildingUrl from "@/assets/building.glb";
 const tempObject = new THREE.Object3D();
 
 export function InstancedBuilding({ data }: { data: any[] }) {
-  const meshRef = useRef<THREE.InstancedMesh>(null!);
+  const meshRefs = {
+    first_floor_0: useRef<THREE.InstancedMesh>(null!),
+    first_floor_1: useRef<THREE.InstancedMesh>(null!),
+    first_floor_2: useRef<THREE.InstancedMesh>(null!),
+    first_floor_3: useRef<THREE.InstancedMesh>(null!),
+    first_floor_corner: useRef<THREE.InstancedMesh>(null!),
+    main_floor_0: useRef<THREE.InstancedMesh>(null!),
+    main_floor_1: useRef<THREE.InstancedMesh>(null!),
+    main_floor_2: useRef<THREE.InstancedMesh>(null!),
+    main_floor_3: useRef<THREE.InstancedMesh>(null!),
+    main_floor_corner: useRef<THREE.InstancedMesh>(null!),
+    roof_cap: useRef<THREE.InstancedMesh>(null!),
+    roof_corner: useRef<THREE.InstancedMesh>(null!),
+    roof_wall_0: useRef<THREE.InstancedMesh>(null!),
+  };
+
   const offsets = useAppStore((s) => s.offsets);
   const buildingProps = useAppStore((s) => s.buildingProps);
-  const { nodes, materials } = useGLTF(buildingUrl) as any;
+  const { nodes } = useGLTF(buildingUrl) as any;
+
+  const groupedData = useMemo(() => {
+    const groups: Record<string, any[]> = {};
+    Object.keys(meshRefs).forEach((key) => (groups[key] = []));
+
+    data.forEach((item) => {
+      if (groups[item.type]) {
+        groups[item.type].push(item);
+      }
+    });
+
+    return groups;
+  }, [data]);
 
   useEffect(() => {
-    if (!meshRef.current || !buildingProps) return;
+    const spacing = 1 + (buildingProps?.offset || 0);
 
-    const { sizeX, sizeZ } = buildingProps;
+    Object.entries(meshRefs).forEach(([type, ref]) => {
+      const mesh = ref.current;
+      const items = groupedData[type];
+      if (!mesh || !items) return;
 
-    data.forEach((item, i) => {
-      tempObject.position.set(
-        item.position.x * 1.1 + offsets[0],
-        item.position.y * 1.1 + offsets[1],
-        item.position.z * 1.1 + offsets[2]
-      );
+      items.forEach((item, i) => {
+        tempObject.position.set(
+          item.position.x * spacing + offsets[0],
+          item.position.y * spacing + offsets[1],
+          item.position.z * spacing + offsets[2]
+        );
 
-      let rotationY = 0;
-      if (item.position.z === 0) {
-        rotationY = -Math.PI / 2;
-      } else if (item.position.z === sizeZ - 1) {
-        rotationY = Math.PI / 2;
-      } else if (item.position.x === 0) {
-        rotationY = 0;
-      } else if (item.position.x === sizeX - 1) {
-        rotationY = Math.PI;
-      }
-
-      tempObject.rotation.set(0, rotationY, 0);
-
-      tempObject.updateMatrix();
-      meshRef.current.setMatrixAt(i, tempObject.matrix);
+        tempObject.rotation.set(0, item.rotationY || 0, 0);
+        tempObject.updateMatrix();
+        mesh.setMatrixAt(i, tempObject.matrix);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
     });
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [data, offsets, buildingProps]);
+  }, [groupedData, offsets]);
+
+  const typeConfig = useMemo(() => {
+    const config: Record<string, { geometry: any; material: any }> = {};
+    Object.keys(meshRefs).forEach((type) => {
+      if (nodes[type]) {
+        config[type] = {
+          geometry: nodes[type].geometry,
+          material: nodes[type].material,
+        };
+      }
+    });
+    return config;
+  }, [nodes]);
 
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[nodes.MainWallWindow1.geometry, materials.Material, data.length]}
-      castShadow
-      receiveShadow
-    />
+    <group>
+      {Object.entries(typeConfig).map(([type, config]) => {
+        const items = groupedData[type];
+        if (!items || items.length === 0) return null;
+
+        return (
+          <instancedMesh
+            key={type}
+            ref={meshRefs[type as keyof typeof meshRefs]}
+            args={[config.geometry, config.material, items.length]}
+            castShadow
+            receiveShadow
+          />
+        );
+      })}
+    </group>
   );
 }
 

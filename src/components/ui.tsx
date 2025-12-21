@@ -53,7 +53,7 @@ export default function Ui() {
             <input
               type="range"
               min={1}
-              max={50}
+              max={10}
               step={1}
               value={buildingProps?.sizeX || 0}
               onChange={(e) => setBuildingProps({ sizeX: +e.target.value })}
@@ -64,7 +64,7 @@ export default function Ui() {
             <input
               type="range"
               min={1}
-              max={50}
+              max={10}
               step={1}
               value={buildingProps?.sizeY || 0}
               onChange={(e) => setBuildingProps({ sizeY: +e.target.value })}
@@ -75,10 +75,21 @@ export default function Ui() {
             <input
               type="range"
               min={1}
-              max={50}
+              max={10}
               step={1}
               value={buildingProps?.sizeZ || 0}
               onChange={(e) => setBuildingProps({ sizeZ: +e.target.value })}
+            />
+          </li>
+          <li>offset: {buildingProps?.offset.toFixed(1)}</li>
+          <li>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.1}
+              value={buildingProps?.offset || 0}
+              onChange={(e) => setBuildingProps({ offset: +e.target.value })}
             />
           </li>
         </ul>
