@@ -28,6 +28,7 @@ interface AppState {
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
   setBuildingProps: (props: Partial<BuildingProps>) => void;
+  resetBuildingProps: () => void;
   setBuilding: (building: any[]) => void;
   setScattered: (scattered: boolean) => void;
   initWorker: () => void;
@@ -83,6 +84,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
         ...props,
       } as BuildingProps,
     })),
+
+  resetBuildingProps: () => set({ buildingProps: buildingConfig }),
 
   setBuilding: (building) => set({ building }),
   setScattered: (isScattered) => set({ isScattered }),
