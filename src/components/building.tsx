@@ -65,13 +65,17 @@ export function InstancedBuilding({ data }: { data: any[] }) {
     });
   }, [groupedData, offsets]);
 
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#888888", roughness: 0.5 }),
+    []
+  );
+
   const typeConfig = useMemo(() => {
-    const config: Record<string, { geometry: any; material: any }> = {};
+    const config: Record<string, { geometry: any }> = {};
     Object.keys(meshRefs).forEach((type) => {
       if (nodes[type]) {
         config[type] = {
           geometry: nodes[type].geometry,
-          material: nodes[type].material,
         };
       }
     });
@@ -88,7 +92,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
           <instancedMesh
             key={type}
             ref={meshRefs[type as keyof typeof meshRefs]}
-            args={[config.geometry, config.material, items.length]}
+            args={[config.geometry, material, items.length]}
             castShadow
             receiveShadow
           />
