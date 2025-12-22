@@ -24,7 +24,9 @@ interface AppState {
   buildingProps?: BuildingProps;
   building: any[];
   isScattered: boolean;
+  autoUpdate: boolean;
   offsets: [number, number, number];
+  setAutoUpdate: (autoUpdate: boolean) => void;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
   setBuildingProps: (props: Partial<BuildingProps>) => void;
@@ -65,7 +67,10 @@ export const useAppStore = create<AppState>()((set, get) => ({
   buildingProps: buildingConfig,
   building: [],
   isScattered: false,
+  autoUpdate: true,
   offsets: [0, 0, 0],
+
+  setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
 
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -77,13 +82,19 @@ export const useAppStore = create<AppState>()((set, get) => ({
       },
     })),
 
-  setBuildingProps: (props) =>
+  setBuildingProps: (props) => {
     set((state) => ({
       buildingProps: {
         ...state.buildingProps,
         ...props,
       } as BuildingProps,
-    })),
+    }));
+
+    const state = get();
+    if (state.autoUpdate) {
+      state.sendWorkerMessage(state.buildingProps);
+    }
+  },
 
   resetBuildingProps: () => set({ buildingProps: buildingConfig }),
 

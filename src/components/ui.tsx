@@ -11,6 +11,8 @@ export default function Ui() {
     buildingProps,
     setBuildingProps,
     resetBuildingProps,
+    autoUpdate,
+    setAutoUpdate,
   } = useAppStore();
 
   const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
@@ -45,6 +47,18 @@ export default function Ui() {
           value={camProps.fov}
           onChange={(e) => setCamProps({ fov: +e.target.value })}
         />
+      </div>
+
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="autoUpdate"
+          checked={autoUpdate}
+          onChange={(e) => setAutoUpdate(e.target.checked)}
+        />
+        <label htmlFor="autoUpdate" className="cursor-pointer">
+          Auto Update
+        </label>
       </div>
 
       <div>
