@@ -22,17 +22,23 @@ export default function Scene() {
   const [dpr, setDpr] = useState(1.5);
 
   return (
-    <Canvas className="bg-neutral-800" dpr={dpr} shadows>
+    <Canvas className="bg-neutral-800" dpr={dpr} shadows={"soft"}>
       <PerformanceMonitor
         onIncline={() => setDpr(2)}
         onDecline={() => setDpr(1)}
       />
-      <Environment preset="city" />
+      <Environment
+        preset="city"
+        background={false}
+        environmentIntensity={0.5}
+      />
+
       <directionalLight
+        castShadow
         position={[10, 10, 10]}
         intensity={5}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
+        shadow-normalBias={0.01}
+        shadow-mapSize={[4096, 4096]}
       />
 
       <Grid {...gridConfig} />
