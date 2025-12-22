@@ -25,4 +25,4 @@ dist-ssr
 
 
 # Blend1 files
-*.blend1
+*.blend[0-9]
