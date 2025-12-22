@@ -66,7 +66,12 @@ export function InstancedBuilding({ data }: { data: any[] }) {
   }, [groupedData, offsets]);
 
   const material = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#888888", roughness: 0.5 }),
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#888888",
+        roughness: 0.7,
+        side: THREE.DoubleSide,
+      }),
     []
   );
 

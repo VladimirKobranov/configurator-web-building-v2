@@ -27,18 +27,19 @@ export default function Scene() {
         onIncline={() => setDpr(2)}
         onDecline={() => setDpr(1)}
       />
+
       <Environment
         preset="city"
         background={false}
-        environmentIntensity={0.5}
+        environmentIntensity={0.4}
       />
 
       <directionalLight
         castShadow
         position={[10, 10, 10]}
-        intensity={5}
+        intensity={4}
         shadow-normalBias={0.01}
-        shadow-mapSize={[4096, 4096]}
+        shadow-mapSize={[2048, 2048]}
       />
 
       <Grid {...gridConfig} />
