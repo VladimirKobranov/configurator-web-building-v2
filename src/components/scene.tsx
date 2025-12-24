@@ -70,14 +70,14 @@ function Lights() {
     sceneProps.showHelpers ? lightRef : null,
     THREE.DirectionalLightHelper,
     1,
-    "red"
+    "red",
   );
 
   useHelper(
     sceneProps.showHelpers && lightRef.current?.shadow?.camera
       ? { current: lightRef.current.shadow.camera }
       : null,
-    THREE.CameraHelper
+    THREE.CameraHelper,
   );
 
   return (

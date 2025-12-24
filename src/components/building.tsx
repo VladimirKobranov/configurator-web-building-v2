@@ -54,7 +54,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
         tempObject.position.set(
           item.position.x * spacing + offsets[0],
           item.position.y * spacing + offsets[1],
-          item.position.z * spacing + offsets[2]
+          item.position.z * spacing + offsets[2],
         );
 
         tempObject.rotation.set(0, item.rotationY || 0, 0);
@@ -72,7 +72,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
         roughness: 0.7,
         side: THREE.DoubleSide,
       }),
-    []
+    [],
   );
 
   const typeConfig = useMemo(() => {
