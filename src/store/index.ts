@@ -17,6 +17,11 @@ interface BuildingProps {
   offset: number;
 }
 
+interface SceneProps {
+  showGrid: boolean;
+  showHelpers: boolean;
+}
+
 interface AppState {
   autoRotateSpeed: number;
   camProps: CameraProps;
@@ -26,13 +31,20 @@ interface AppState {
   isScattered: boolean;
   autoUpdate: boolean;
   offsets: [number, number, number];
+  sceneProps: SceneProps;
+  // camera props
   setAutoUpdate: (autoUpdate: boolean) => void;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
+  //building props
   setBuildingProps: (props: Partial<BuildingProps>) => void;
   resetBuildingProps: () => void;
   setBuilding: (building: any[]) => void;
   setScattered: (scattered: boolean) => void;
+  // scene props
+  setSceneProps: (props: Partial<SceneProps>) => void;
+
+  // worker
   initWorker: () => void;
   cleanupWorker: () => void;
   sendWorkerMessage: (payload?: BuildingProps) => void;
@@ -57,6 +69,7 @@ const createLogicWorker = (onMessage: (data: any) => void) => {
 };
 
 export const useAppStore = create<AppState>()((set, get) => ({
+  // camera props
   autoRotateSpeed: 0,
   camProps: {
     position: cameraConfig.position,
@@ -69,9 +82,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
   isScattered: false,
   autoUpdate: true,
   offsets: [0, 0, 0],
+  // scene props
+  sceneProps: {
+    showGrid: true,
+    showHelpers: true,
+  },
 
-  setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
-
+  // camera functions
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
   setCamProps: (props) =>
@@ -96,11 +113,16 @@ export const useAppStore = create<AppState>()((set, get) => ({
     }
   },
 
+  // building functions
   resetBuildingProps: () => set({ buildingProps: buildingConfig }),
 
+  setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
+
   setBuilding: (building) => set({ building }),
+
   setScattered: (isScattered) => set({ isScattered }),
 
+  // worker functions
   initWorker: () => {
     const state = get();
     if (!state.logicWorker) {
@@ -142,4 +164,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
       state.logicWorker.postMessage({ payload });
     }
   },
+
+  // scene functions
+  setSceneProps: (props) =>
+    set((state) => ({
+      sceneProps: {
+        ...state.sceneProps,
+        ...props,
+      },
+    })),
 }));

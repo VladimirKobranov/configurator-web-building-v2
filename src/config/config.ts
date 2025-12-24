@@ -9,7 +9,7 @@ export const orbitControlsConfig = {
   maxPolarAngle: Math.PI / 2,
   target: [-0.02, 0.55, -0.28] as [number, number, number],
   minDistance: 1,
-  maxDistance: 20,
+  maxDistance: 40,
   enableDamping: true,
   makeDefault: true,
   autoRotate: true,

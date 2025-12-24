@@ -13,6 +13,8 @@ export default function Ui() {
     resetBuildingProps,
     autoUpdate,
     setAutoUpdate,
+    sceneProps,
+    setSceneProps,
   } = useAppStore();
 
   const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
@@ -106,6 +108,28 @@ export default function Ui() {
               step={0.1}
               value={buildingProps?.offset || 0}
               onChange={(e) => setBuildingProps({ offset: +e.target.value })}
+            />
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Scene props:</h2>
+        <ul>
+          <li>showGrid: {sceneProps.showGrid.toString()}</li>
+          <li>
+            <input
+              type="checkbox"
+              checked={sceneProps.showGrid}
+              onChange={(e) => setSceneProps({ showGrid: e.target.checked })}
+            />
+          </li>
+          <li>showHelpers: {sceneProps.showHelpers.toString()}</li>
+          <li>
+            <input
+              type="checkbox"
+              checked={sceneProps.showHelpers}
+              onChange={(e) => setSceneProps({ showHelpers: e.target.checked })}
             />
           </li>
         </ul>
