@@ -1,19 +1,18 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import * as THREE from "three";
 import {
   OrbitControls,
   Grid,
   PerspectiveCamera,
   PerformanceMonitor,
   Environment,
-  useHelper,
 } from "@react-three/drei";
 import { useAppStore } from "@/store";
 import { gridConfig, orbitControlsConfig } from "@/config/config";
 import CameraDebugger from "@/components/camera_debugger";
 import { InstancedBuilding } from "@/components/building";
 import ShadowCatcher from "@/components/shadow_catcher";
+import Lights from "./lights";
 
 export default function Scene() {
   const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);
@@ -26,77 +25,38 @@ export default function Scene() {
 
   return (
     <Canvas className="bg-neutral-800" dpr={dpr} shadows={"soft"}>
-      <PerformanceMonitor
-        onIncline={() => setDpr(2)}
-        onDecline={() => setDpr(1)}
-      />
-
+      {/* environment */}
       <Environment
         preset="city"
         background={false}
         environmentIntensity={0.4}
       />
 
+      {/* lights */}
       <Lights />
 
+      {/* grid */}
       {sceneProps.showGrid && <Grid {...gridConfig} />}
 
-      <PerspectiveCamera
-        makeDefault
-        {...camProps}
-        // position={camProps.position}
-        // fov={camProps.fov}
-        // near={camProps.near}
-        // far={camProps.far}
-      />
+      {/* camera */}
+      <PerspectiveCamera makeDefault {...camProps} />
+      <CameraDebugger />
       <OrbitControls
         {...orbitControlsConfig}
         autoRotateSpeed={autoRotateSpeed}
       />
+
+      {/* building */}
       {isScattered && <InstancedBuilding data={building} />}
 
+      {/* shadow catcher */}
       <ShadowCatcher />
 
-      <CameraDebugger />
+      {/* performance monitor */}
+      <PerformanceMonitor
+        onIncline={() => setDpr(2)}
+        onDecline={() => setDpr(1)}
+      />
     </Canvas>
-  );
-}
-
-function Lights() {
-  const sceneProps = useAppStore((s) => s.sceneProps);
-  const lightRef = useRef<THREE.DirectionalLight>(null!);
-
-  useHelper(
-    sceneProps.showHelpers ? lightRef : null,
-    THREE.DirectionalLightHelper,
-    1,
-    "red",
-  );
-
-  useHelper(
-    sceneProps.showHelpers && lightRef.current?.shadow?.camera
-      ? { current: lightRef.current.shadow.camera }
-      : null,
-    THREE.CameraHelper,
-  );
-
-  return (
-    <directionalLight
-      ref={lightRef}
-      castShadow
-      position={[10, 10, 10]}
-      intensity={4}
-      // shadow
-      shadow-mapSize={[2048, 2048]}
-      shadow-bias={-0.0005}
-      shadow-normalBias={0.02}
-      // shadow-camera
-      shadow-camera-near={2}
-      shadow-camera-far={40}
-      shadow-camera-left={-20}
-      shadow-camera-right={20}
-      shadow-camera-top={20}
-      shadow-camera-bottom={-20}
-    />
   );
 }

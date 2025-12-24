@@ -6,7 +6,7 @@ export default function ShadowCatcher() {
       receiveShadow
     >
       <planeGeometry args={[100, 100]} />
-      <shadowMaterial transparent opacity={0.4} />
+      <shadowMaterial transparent opacity={0.5} />
     </mesh>
   );
 }
