@@ -21,20 +21,8 @@ export default function Ui() {
 
   return (
     <div className="z-100 text-white fixed top-10 left-10">
-      <div className="mb-4">
-        <h1>Auto Rotate speed: {autoRotateSpeed}</h1>
-        <input
-          type="range"
-          min={0}
-          max={5}
-          step={0.25}
-          value={autoRotateSpeed}
-          onChange={(e) => setAutoRotateSpeed(+e.target.value)}
-        />
-      </div>
-
       <div>
-        <h2>Camera props:</h2>
+        <h2 className="text-lg font-bold">Camera props:</h2>
         <ul>
           <li>position: [{fmt(camProps.position)}]</li>
           <li>rotation: [{fmt(camProps.rotation)}]</li>
@@ -49,22 +37,22 @@ export default function Ui() {
           value={camProps.fov}
           onChange={(e) => setCamProps({ fov: +e.target.value })}
         />
+
+        <div className="mb-4">
+          <h3>Auto Rotate speed: {autoRotateSpeed}</h3>
+          <input
+            type="range"
+            min={0}
+            max={5}
+            step={0.25}
+            value={autoRotateSpeed}
+            onChange={(e) => setAutoRotateSpeed(+e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="mb-4 flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="autoUpdate"
-          checked={autoUpdate}
-          onChange={(e) => setAutoUpdate(e.target.checked)}
-        />
-        <label htmlFor="autoUpdate" className="cursor-pointer">
-          Auto Update
-        </label>
-      </div>
-
-      <div>
-        <h2>Building props:</h2>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold">Building props:</h2>
         <ul>
           <li>sizeX: {buildingProps?.sizeX}</li>
           <li>
@@ -113,26 +101,40 @@ export default function Ui() {
         </ul>
       </div>
 
-      <div>
-        <h2>Scene props:</h2>
-        <ul>
-          <li>showGrid: {sceneProps.showGrid.toString()}</li>
-          <li>
-            <input
-              type="checkbox"
-              checked={sceneProps.showGrid}
-              onChange={(e) => setSceneProps({ showGrid: e.target.checked })}
-            />
-          </li>
-          <li>showHelpers: {sceneProps.showHelpers.toString()}</li>
-          <li>
-            <input
-              type="checkbox"
-              checked={sceneProps.showHelpers}
-              onChange={(e) => setSceneProps({ showHelpers: e.target.checked })}
-            />
-          </li>
-        </ul>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold mb-2">Scene props:</h2>
+        <div className="mb-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={sceneProps.showGrid}
+            onChange={(e) => setSceneProps({ showGrid: e.target.checked })}
+          />
+          <label htmlFor="showGrid" className="cursor-pointer">
+            Show Grid
+          </label>
+        </div>
+        <div className="mb-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={sceneProps.showHelpers}
+            onChange={(e) => setSceneProps({ showHelpers: e.target.checked })}
+          />
+          <label htmlFor="showHelpers" className="cursor-pointer">
+            Show Helpers
+          </label>
+        </div>
+
+        <div className="mb-4 flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="autoUpdate"
+            checked={autoUpdate}
+            onChange={(e) => setAutoUpdate(e.target.checked)}
+          />
+          <label htmlFor="autoUpdate" className="cursor-pointer">
+            Auto Update
+          </label>
+        </div>
       </div>
 
       <div className="flex gap-2">
