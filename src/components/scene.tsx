@@ -24,7 +24,7 @@ export default function Scene() {
   const [dpr, setDpr] = useState(1.5);
 
   return (
-    <Canvas className="bg-neutral-800" dpr={dpr} shadows={"soft"}>
+    <Canvas className="bg-neutral-800" dpr={dpr} shadows="soft">
       {/* environment */}
       <Environment
         preset="city"

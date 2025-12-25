@@ -1,6 +1,6 @@
 // store.ts
 import { create } from "zustand";
-import { cameraConfig, buildingConfig } from "@/config/config";
+import { cameraConfig, buildingConfig, sceneConfig } from "@/config/config";
 
 type Vec3 = [number, number, number];
 
@@ -84,8 +84,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
   offsets: [0, 0, 0],
   // scene props
   sceneProps: {
-    showGrid: true,
-    showHelpers: true,
+    showGrid: sceneConfig.showGrid,
+    showHelpers: sceneConfig.showHelpers,
   },
 
   // camera functions
