@@ -31,16 +31,16 @@ export default function Lights() {
       position={[10, 10, 10]}
       intensity={4}
       // shadow
-      shadow-mapSize={[2048, 2048]}
-      shadow-bias={-0.00001}
-      // shadow-normalBias={0.01}
+      shadow-mapSize={[4096, 4096]}
+      shadow-bias={-0.0001}
+      shadow-normalBias={0.02}
       // shadow-camera
-      // shadow-camera-near={1}
-      // shadow-camera-far={40}
-      // shadow-camera-left={-20}
-      // shadow-camera-right={20}
-      // shadow-camera-top={20}
-      // shadow-camera-bottom={-20}
+      shadow-camera-near={1}
+      shadow-camera-far={40}
+      shadow-camera-left={-15}
+      shadow-camera-right={15}
+      shadow-camera-top={15}
+      shadow-camera-bottom={-15}
     />
   );
 }
