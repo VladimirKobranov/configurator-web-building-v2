@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useAppStore } from "@/store";
+// import { useAppStore } from "@/store";
 
 // @ts-ignore
 import buildingUrl from "@/assets/building.glb";
@@ -25,8 +25,6 @@ export function InstancedBuilding({ data }: { data: any[] }) {
     roof_wall_0: useRef<THREE.InstancedMesh>(null!),
   };
 
-  const offsets = useAppStore((s) => s.offsets);
-  const buildingProps = useAppStore((s) => s.buildingProps);
   const { nodes } = useGLTF(buildingUrl) as any;
 
   const groupedData = useMemo(() => {
@@ -43,8 +41,6 @@ export function InstancedBuilding({ data }: { data: any[] }) {
   }, [data]);
 
   useEffect(() => {
-    const spacing = 1 + (buildingProps?.offset || 0);
-
     Object.entries(meshRefs).forEach(([type, ref]) => {
       const mesh = ref.current;
       const items = groupedData[type];
@@ -52,9 +48,9 @@ export function InstancedBuilding({ data }: { data: any[] }) {
 
       items.forEach((item, i) => {
         tempObject.position.set(
-          item.position.x * spacing + offsets[0],
-          item.position.y * spacing + offsets[1],
-          item.position.z * spacing + offsets[2]
+          item.position.x,
+          item.position.y,
+          item.position.z
         );
 
         tempObject.rotation.set(0, item.rotationY || 0, 0);
@@ -63,7 +59,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
       });
       mesh.instanceMatrix.needsUpdate = true;
     });
-  }, [groupedData, offsets]);
+  }, [groupedData]);
 
   const material = useMemo(
     () =>

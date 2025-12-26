@@ -41,4 +41,5 @@ export const buildingConfig = {
   sizeY: 5,
   sizeZ: 3,
   offset: 0.0,
+  randomSeed: 45678,
 };

@@ -9,11 +9,27 @@ onmessage = async (event) => {
   const sizeX = payload?.sizeX || 10;
   const sizeY = payload?.sizeY || 10;
   const sizeZ = payload?.sizeZ || 10;
+  const offset = payload?.offset || 0;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}`,
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}`
   );
-  const house = buildHouse(sizeX, sizeY, sizeZ);
+  const rawHouse = buildHouse(sizeX, sizeY, sizeZ);
+
+  // Apply spacing and centering
+  const spacing = 1 + offset;
+  const centerOffsetX = -((sizeX - 1) * spacing) / 2;
+  const centerOffsetZ = -((sizeZ - 1) * spacing) / 2;
+
+  const house = rawHouse.map((item) => ({
+    ...item,
+    position: {
+      x: item.position.x * spacing + centerOffsetX,
+      y: item.position.y * spacing + 0.5, // 0.5 vertical offset from store
+      z: item.position.z * spacing + centerOffsetZ,
+    },
+  }));
+
   console.log("worker: house built", house);
 
   // Send the result back to the main thread
@@ -47,7 +63,7 @@ function generateWallSide(
   start: { x: number; z: number },
   axis: "x" | "z",
   rotationY: number,
-  sideIndex: number,
+  sideIndex: number
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -75,7 +91,7 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     { x: 0, z: 0 },
     "x",
     -Math.PI / 2,
-    0,
+    0
   );
   const south = generateWallSide(
     sizeX,
@@ -83,7 +99,7 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     { x: 0, z: sizeZ - 1 },
     "x",
     Math.PI / 2,
-    1,
+    1
   );
   const west = generateWallSide(sizeZ, sizeY, { x: 0, z: 0 }, "z", 0, 2);
   const east = generateWallSide(
@@ -92,7 +108,7 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     { x: sizeX - 1, z: 0 },
     "z",
     Math.PI,
-    3,
+    3
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -120,12 +136,9 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     if (isCorner) {
       // Logic for rotations stays the same as per previous custom request
       let rot = 0;
-      if (x === 0 && z === 0)
-        rot = 0; // left top
-      else if (x === sizeX - 1 && z === 0)
-        rot = -Math.PI / 2; // right bottom
-      else if (x === sizeX - 1 && z === sizeZ - 1)
-        rot = Math.PI; // right top
+      if (x === 0 && z === 0) rot = 0; // left top
+      else if (x === sizeX - 1 && z === 0) rot = -Math.PI / 2; // right bottom
+      else if (x === sizeX - 1 && z === sizeZ - 1) rot = Math.PI; // right top
       else if (x === 0 && z === sizeZ - 1) rot = Math.PI / 2; // left bottom
 
       let type = "main_floor_corner";

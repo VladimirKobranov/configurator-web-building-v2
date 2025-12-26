@@ -15,6 +15,7 @@ interface BuildingProps {
   sizeY: number;
   sizeZ: number;
   offset: number;
+  randomSeed: number;
 }
 
 interface SceneProps {
@@ -23,6 +24,7 @@ interface SceneProps {
 }
 
 interface AppState {
+  // init states
   autoRotateSpeed: number;
   camProps: CameraProps;
   logicWorker: Worker | null;
@@ -30,17 +32,20 @@ interface AppState {
   building: any[];
   isScattered: boolean;
   autoUpdate: boolean;
-  offsets: [number, number, number];
   sceneProps: SceneProps;
+
+  // actions
   // camera props
   setAutoUpdate: (autoUpdate: boolean) => void;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
+
   //building props
   setBuildingProps: (props: Partial<BuildingProps>) => void;
   resetBuildingProps: () => void;
   setBuilding: (building: any[]) => void;
   setScattered: (scattered: boolean) => void;
+
   // scene props
   setSceneProps: (props: Partial<SceneProps>) => void;
 
@@ -69,25 +74,24 @@ const createLogicWorker = (onMessage: (data: any) => void) => {
 };
 
 export const useAppStore = create<AppState>()((set, get) => ({
+  // INIT STATES
   // camera props
   autoRotateSpeed: 0,
-  camProps: {
-    position: cameraConfig.position,
-    rotation: cameraConfig.rotation,
-    fov: cameraConfig.fov,
-  },
+  camProps: cameraConfig,
+
+  // worker
   logicWorker: null,
+
+  // scene props
+  sceneProps: sceneConfig,
+  autoUpdate: true,
+
+  // building props
+  isScattered: false,
   buildingProps: buildingConfig,
   building: [],
-  isScattered: false,
-  autoUpdate: true,
-  offsets: [0, 0, 0],
-  // scene props
-  sceneProps: {
-    showGrid: sceneConfig.showGrid,
-    showHelpers: sceneConfig.showHelpers,
-  },
 
+  // ACTIONS
   // camera functions
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -100,12 +104,16 @@ export const useAppStore = create<AppState>()((set, get) => ({
     })),
 
   setBuildingProps: (props) => {
-    set((state) => ({
-      buildingProps: {
+    set((state) => {
+      const updatedProps = {
         ...state.buildingProps,
         ...props,
-      } as BuildingProps,
-    }));
+      } as BuildingProps;
+
+      return {
+        buildingProps: updatedProps,
+      };
+    });
 
     const state = get();
     if (state.autoUpdate) {
@@ -129,17 +137,15 @@ export const useAppStore = create<AppState>()((set, get) => ({
       const worker = createLogicWorker((data) => {
         if (data.status === "success" && data.result) {
           const { sizeX, sizeZ } = data.dimensions;
-          const { offset } = get().buildingProps || { offset: 0.1 };
-          const spacing = 1 + offset;
-
-          const offsetX = -((sizeX - 1) * spacing) / 2;
-          const offsetZ = -((sizeZ - 1) * spacing) / 2;
-          const offsetY = 0.5;
 
           set({
             building: data.result,
-            offsets: [offsetX, offsetY, offsetZ],
             isScattered: true,
+            buildingProps: {
+              ...(get().buildingProps || buildingConfig),
+              sizeX,
+              sizeZ,
+            },
           });
           console.log("Building data stored:", data.result);
         }
