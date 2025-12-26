@@ -43,6 +43,7 @@ export default function Scene() {
       <CameraDebugger />
       <OrbitControls
         {...orbitControlsConfig}
+        target={camProps.target}
         autoRotateSpeed={autoRotateSpeed}
       />
 

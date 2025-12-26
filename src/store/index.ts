@@ -7,6 +7,7 @@ type Vec3 = [number, number, number];
 
 interface CameraProps {
   position: Vec3;
+  target: Vec3;
   rotation: Vec3;
   fov: number;
 }

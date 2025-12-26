@@ -26,6 +26,7 @@ export default function Ui() {
         <h2 className="text-lg font-bold">Camera props:</h2>
         <ul>
           <li>position: [{fmt(camProps.position)}]</li>
+          <li>target: [{fmt(camProps.target)}]</li>
           <li>rotation: [{fmt(camProps.rotation)}]</li>
           <li>fov: {camProps.fov.toFixed(3)}</li>
         </ul>

@@ -1,13 +1,13 @@
 export const cameraConfig = {
   fov: 40,
-  position: [0, 5, 10] as [number, number, number],
-  rotation: [0, 0, 0] as [number, number, number],
+  position: [-6.48, 5.47, 9.21] as [number, number, number],
+  target: [-0.14, 1.52, -0.7] as [number, number, number],
+  rotation: [-0.38, -0.54, -0.2] as [number, number, number],
 };
 
 export const orbitControlsConfig = {
   minPolarAngle: 0,
   maxPolarAngle: Math.PI / 2,
-  target: [-0.02, 0.55, -0.28] as [number, number, number],
   minDistance: 1,
   maxDistance: 40,
   enableDamping: true,
