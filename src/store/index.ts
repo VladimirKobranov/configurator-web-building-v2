@@ -1,6 +1,7 @@
 // store.ts
 import { create } from "zustand";
 import { cameraConfig, buildingConfig, sceneConfig } from "@/config/config";
+import { mulberry32 } from "@/etc/utils";
 
 type Vec3 = [number, number, number];
 
@@ -43,6 +44,7 @@ interface AppState {
   //building props
   setBuildingProps: (props: Partial<BuildingProps>) => void;
   resetBuildingProps: () => void;
+  randomizeSeed: () => void;
   setBuilding: (building: any[]) => void;
   setScattered: (scattered: boolean) => void;
 
@@ -122,6 +124,12 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
 
   // building functions
+  randomizeSeed: () => {
+    const rand = mulberry32(Date.now());
+    get().setBuildingProps({
+      randomSeed: Math.floor(rand() * 99999), // five digits
+    });
+  },
   resetBuildingProps: () => set({ buildingProps: buildingConfig }),
 
   setAutoUpdate: (autoUpdate) => set({ autoUpdate }),

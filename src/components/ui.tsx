@@ -11,6 +11,7 @@ export default function Ui() {
     buildingProps,
     setBuildingProps,
     resetBuildingProps,
+    randomizeSeed,
     autoUpdate,
     setAutoUpdate,
     sceneProps,
@@ -98,6 +99,28 @@ export default function Ui() {
               onChange={(e) => setBuildingProps({ offset: +e.target.value })}
             />
           </li>
+          <li>seed: {buildingProps?.randomSeed}</li>
+          <li className="mb-4 mt-2">
+            <div className="flex gap-2 flex-col w-full">
+              <input
+                type="number"
+                min={0}
+                max={99999}
+                className="w-full text-black px-2 py-1 bg-gray-100 rounded"
+                value={buildingProps?.randomSeed}
+                onChange={(e) => {
+                  const val = e.target.value.slice(0, 5);
+                  setBuildingProps({ randomSeed: +val });
+                }}
+              />
+              <button
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={randomizeSeed}
+              >
+                Randomize
+              </button>
+            </div>
+          </li>
         </ul>
       </div>
 
@@ -139,13 +162,13 @@ export default function Ui() {
 
       <div className="flex gap-2">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex-grow"
           onClick={() => sendWorkerMessage(buildingProps)}
         >
           Build
         </button>
         <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
           onClick={() => {
             resetBuildingProps();
             sendWorkerMessage(buildingConfig);

@@ -1,3 +1,5 @@
+import { mulberry32 } from "@/etc/utils";
+
 onmessage = async (event) => {
   const { payload } = event.data;
 
@@ -10,11 +12,14 @@ onmessage = async (event) => {
   const sizeY = payload?.sizeY || 10;
   const sizeZ = payload?.sizeZ || 10;
   const offset = payload?.offset || 0;
+  const seed = payload?.randomSeed || 12345;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}`
   );
-  const rawHouse = buildHouse(sizeX, sizeY, sizeZ);
+
+  const randGen = mulberry32(seed); // Re-init for generation to be clean
+  const rawHouse = buildHouse(sizeX, sizeY, sizeZ, randGen);
 
   // Apply spacing and centering
   const spacing = 1 + offset;
@@ -63,7 +68,8 @@ function generateWallSide(
   start: { x: number; z: number },
   axis: "x" | "z",
   rotationY: number,
-  sideIndex: number
+  sideIndex: number,
+  rand: () => number
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -72,8 +78,22 @@ function generateWallSide(
         ? { x: start.x + i, z: start.z }
         : { x: start.x, z: start.z + i };
     for (let y = 0; y < heightY; y++) {
+      let type = "unknown";
+
+      // Pick random variant index 0-3
+      const variant = Math.floor(rand() * 4);
+      // console.log(`worker: pos ${i},${y} variant ${variant}`); // Careful with spamming logs
+
+      if (y === 0) {
+        type = `first_floor_${variant}`;
+      } else if (y === heightY - 1) {
+        type = "roof_wall_0";
+      } else {
+        type = `main_floor_${variant}`;
+      }
+
       arr.push({
-        type: "wall",
+        type,
         position: { x: pos.x, y, z: pos.z },
         rotationY,
         sideIndex,
@@ -83,7 +103,12 @@ function generateWallSide(
   return arr;
 }
 
-function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
+function buildHouse(
+  sizeX: number,
+  sizeY: number,
+  sizeZ: number,
+  rand: () => number
+) {
   const roof = generateRoof(sizeX, sizeZ, sizeY);
   const north = generateWallSide(
     sizeX,
@@ -91,7 +116,8 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     { x: 0, z: 0 },
     "x",
     -Math.PI / 2,
-    0
+    0,
+    rand
   );
   const south = generateWallSide(
     sizeX,
@@ -99,16 +125,18 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
     { x: 0, z: sizeZ - 1 },
     "x",
     Math.PI / 2,
-    1
+    1,
+    rand
   );
-  const west = generateWallSide(sizeZ, sizeY, { x: 0, z: 0 }, "z", 0, 2);
+  const west = generateWallSide(sizeZ, sizeY, { x: 0, z: 0 }, "z", 0, 2, rand);
   const east = generateWallSide(
     sizeZ,
     sizeY,
     { x: sizeX - 1, z: 0 },
     "z",
     Math.PI,
-    3
+    3,
+    rand
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -151,14 +179,7 @@ function buildHouse(sizeX: number, sizeY: number, sizeZ: number) {
         rotationY: rot,
       });
     } else {
-      let type = `main_floor_0`;
-      if (y === 0) type = `first_floor_0`;
-      else if (y === sizeY - 1) type = "roof_wall_0";
-
-      finalSegments.push({
-        ...seg,
-        type,
-      });
+      finalSegments.push(seg);
     }
   });
 

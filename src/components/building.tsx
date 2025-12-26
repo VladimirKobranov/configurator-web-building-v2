@@ -15,6 +15,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
     first_floor_2: useRef<THREE.InstancedMesh>(null!),
     first_floor_3: useRef<THREE.InstancedMesh>(null!),
     first_floor_corner: useRef<THREE.InstancedMesh>(null!),
+    //main_floor: [useRef<THREE.InstancedMesh>(null!)], // TODO: refactor to use items from array
     main_floor_0: useRef<THREE.InstancedMesh>(null!),
     main_floor_1: useRef<THREE.InstancedMesh>(null!),
     main_floor_2: useRef<THREE.InstancedMesh>(null!),

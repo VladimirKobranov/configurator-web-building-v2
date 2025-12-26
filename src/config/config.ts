@@ -37,9 +37,9 @@ export const sceneConfig = {
 };
 
 export const buildingConfig = {
-  sizeX: 4,
+  sizeX: 6,
   sizeY: 5,
-  sizeZ: 3,
+  sizeZ: 5,
   offset: 0.0,
-  randomSeed: 45678,
+  randomSeed: 52221,
 };
