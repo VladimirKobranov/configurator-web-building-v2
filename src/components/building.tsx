@@ -1,21 +1,45 @@
 import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
+import type { BuildingItem } from "@/types";
 // import { useAppStore } from "@/store";
 
-// @ts-ignore
+// @ts-expect-error - GLB files are not recognized by TypeScript by default
 import buildingUrl from "@/assets/building.glb";
 
 const tempObject = new THREE.Object3D();
 
-export function InstancedBuilding({ data }: { data: any[] }) {
-  const meshRefs = {
+// Define types
+const MESH_KEYS = [
+  "first_floor_0",
+  "first_floor_1",
+  "first_floor_2",
+  "first_floor_3",
+  "first_floor_corner",
+  "main_floor_0",
+  "main_floor_1",
+  "main_floor_2",
+  "main_floor_3",
+  "main_floor_corner",
+  "roof_cap",
+  "roof_corner",
+  "roof_wall_0",
+] as const;
+
+type MeshType = (typeof MESH_KEYS)[number];
+
+interface GLTFResult {
+  nodes: Record<string, THREE.Mesh>;
+  materials: Record<string, THREE.Material>;
+}
+
+export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
+  const meshRefs: Record<MeshType, React.RefObject<THREE.InstancedMesh>> = {
     first_floor_0: useRef<THREE.InstancedMesh>(null!),
     first_floor_1: useRef<THREE.InstancedMesh>(null!),
     first_floor_2: useRef<THREE.InstancedMesh>(null!),
     first_floor_3: useRef<THREE.InstancedMesh>(null!),
     first_floor_corner: useRef<THREE.InstancedMesh>(null!),
-    //main_floor: [useRef<THREE.InstancedMesh>(null!)], // TODO: refactor to use items from array
     main_floor_0: useRef<THREE.InstancedMesh>(null!),
     main_floor_1: useRef<THREE.InstancedMesh>(null!),
     main_floor_2: useRef<THREE.InstancedMesh>(null!),
@@ -26,11 +50,18 @@ export function InstancedBuilding({ data }: { data: any[] }) {
     roof_wall_0: useRef<THREE.InstancedMesh>(null!),
   };
 
-  const { nodes } = useGLTF(buildingUrl) as any;
+  // Memoize meshRefs to keep the object stable across renders
+  const stableMeshRefs = useMemo(
+    () => meshRefs,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.values(meshRefs)
+  );
+
+  const { nodes } = useGLTF(buildingUrl) as unknown as GLTFResult;
 
   const groupedData = useMemo(() => {
-    const groups: Record<string, any[]> = {};
-    Object.keys(meshRefs).forEach((key) => (groups[key] = []));
+    const groups: Record<string, BuildingItem[]> = {};
+    MESH_KEYS.forEach((key) => (groups[key] = []));
 
     data.forEach((item) => {
       if (groups[item.type]) {
@@ -42,7 +73,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
   }, [data]);
 
   useEffect(() => {
-    Object.entries(meshRefs).forEach(([type, ref]) => {
+    Object.entries(stableMeshRefs).forEach(([type, ref]) => {
       const mesh = ref.current;
       const items = groupedData[type];
       if (!mesh || !items) return;
@@ -60,7 +91,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
       });
       mesh.instanceMatrix.needsUpdate = true;
     });
-  }, [groupedData]);
+  }, [groupedData, stableMeshRefs]);
 
   const material = useMemo(
     () =>
@@ -73,8 +104,8 @@ export function InstancedBuilding({ data }: { data: any[] }) {
   );
 
   const typeConfig = useMemo(() => {
-    const config: Record<string, { geometry: any }> = {};
-    Object.keys(meshRefs).forEach((type) => {
+    const config: Record<string, { geometry: THREE.BufferGeometry }> = {};
+    MESH_KEYS.forEach((type) => {
       if (nodes[type]) {
         config[type] = {
           geometry: nodes[type].geometry,
@@ -93,7 +124,7 @@ export function InstancedBuilding({ data }: { data: any[] }) {
         return (
           <instancedMesh
             key={type}
-            ref={meshRefs[type as keyof typeof meshRefs]}
+            ref={stableMeshRefs[type as MeshType]}
             args={[config.geometry, material, items.length]}
             castShadow
             receiveShadow
@@ -104,8 +135,8 @@ export function InstancedBuilding({ data }: { data: any[] }) {
   );
 }
 
-export function Model(props: any) {
-  const { nodes } = useGLTF(buildingUrl) as any;
+export function Model(props: React.ComponentPropsWithoutRef<"group">) {
+  const { nodes } = useGLTF(buildingUrl) as unknown as GLTFResult;
   return (
     <group {...props} dispose={null}>
       <mesh

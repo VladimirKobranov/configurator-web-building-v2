@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { cameraConfig, buildingConfig, sceneConfig } from "@/config/config";
 import { mulberry32 } from "@/etc/utils";
+import type { BuildingItem } from "@/types";
 
 type Vec3 = [number, number, number];
 
@@ -31,7 +32,7 @@ interface AppState {
   camProps: CameraProps;
   logicWorker: Worker | null;
   buildingProps?: BuildingProps;
-  building: any[];
+  building: BuildingItem[];
   isScattered: boolean;
   autoUpdate: boolean;
   sceneProps: SceneProps;
@@ -46,7 +47,7 @@ interface AppState {
   setBuildingProps: (props: Partial<BuildingProps>) => void;
   resetBuildingProps: () => void;
   randomizeSeed: () => void;
-  setBuilding: (building: any[]) => void;
+  setBuilding: (building: BuildingItem[]) => void;
   setScattered: (scattered: boolean) => void;
 
   // scene props
@@ -58,7 +59,13 @@ interface AppState {
   sendWorkerMessage: (payload?: BuildingProps) => void;
 }
 
-const createLogicWorker = (onMessage: (data: any) => void) => {
+const createLogicWorker = (
+  onMessage: (data: {
+    status: string;
+    result: BuildingItem[];
+    dimensions: { sizeX: number; sizeY: number; sizeZ: number };
+  }) => void
+) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",
   });

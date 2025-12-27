@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { useRef } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useHelper } from "@react-three/drei";
 
 import * as THREE from "three";
@@ -17,10 +17,21 @@ export default function Lights() {
   );
 
   // camera shadow helper (size)
+  const [shadowCam, setShadowCam] = useState<THREE.Camera | null>(null);
+
+  useEffect(() => {
+    if (lightRef.current && !shadowCam) {
+      setShadowCam(lightRef.current.shadow.camera);
+    }
+  }, [shadowCam]);
+
+  const shadowCamRef = useMemo(
+    () => (shadowCam ? { current: shadowCam } : null),
+    [shadowCam]
+  );
+
   useHelper(
-    sceneProps.showHelpers && lightRef.current?.shadow?.camera
-      ? { current: lightRef.current.shadow.camera }
-      : null,
+    sceneProps.showHelpers && shadowCamRef ? shadowCamRef : null,
     THREE.CameraHelper
   );
 

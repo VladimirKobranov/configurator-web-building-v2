@@ -1,4 +1,5 @@
 import { mulberry32 } from "@/etc/utils";
+import type { BuildingItem } from "@/types";
 
 onmessage = async (event) => {
   const { payload } = event.data;
@@ -82,7 +83,6 @@ function generateWallSide(
 
       // Pick random variant index 0-3
       const variant = Math.floor(rand() * 4);
-      // console.log(`worker: pos ${i},${y} variant ${variant}`); // Careful with spamming logs
 
       if (y === 0) {
         type = `first_floor_${variant}`;
@@ -140,7 +140,7 @@ function buildHouse(
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
-  const posMap = new Map<string, any[]>();
+  const posMap = new Map<string, BuildingItem[]>();
 
   allWalls.forEach((seg) => {
     const key = `${seg.position.x},${seg.position.y},${seg.position.z}`;
@@ -148,7 +148,7 @@ function buildHouse(
     posMap.get(key)!.push(seg);
   });
 
-  const finalSegments: any[] = [...roof];
+  const finalSegments: BuildingItem[] = [...roof];
   const seen = new Set<string>();
 
   // Process wall segments to find corners and deduplicate
@@ -162,7 +162,6 @@ function buildHouse(
     const { x, y, z } = seg.position;
 
     if (isCorner) {
-      // Logic for rotations stays the same as per previous custom request
       let rot = 0;
       if (x === 0 && z === 0) rot = 0; // left top
       else if (x === sizeX - 1 && z === 0) rot = -Math.PI / 2; // right bottom
