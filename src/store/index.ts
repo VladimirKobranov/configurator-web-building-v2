@@ -2,62 +2,7 @@
 import { create } from "zustand";
 import { cameraConfig, buildingConfig, sceneConfig } from "@/config/config";
 import { mulberry32 } from "@/etc/utils";
-import type { BuildingItem } from "@/types";
-
-type Vec3 = [number, number, number];
-
-interface CameraProps {
-  position: Vec3;
-  target: Vec3;
-  rotation: Vec3;
-  fov: number;
-}
-
-interface BuildingProps {
-  sizeX: number;
-  sizeY: number;
-  sizeZ: number;
-  offset: number;
-  randomSeed: number;
-}
-
-interface SceneProps {
-  showGrid: boolean;
-  showHelpers: boolean;
-}
-
-interface AppState {
-  // init states
-  autoRotateSpeed: number;
-  camProps: CameraProps;
-  logicWorker: Worker | null;
-  buildingProps?: BuildingProps;
-  building: BuildingItem[];
-  isScattered: boolean;
-  autoUpdate: boolean;
-  sceneProps: SceneProps;
-
-  // actions
-  // camera props
-  setAutoUpdate: (autoUpdate: boolean) => void;
-  setAutoRotateSpeed: (speed: number) => void;
-  setCamProps: (props: Partial<CameraProps>) => void;
-
-  //building props
-  setBuildingProps: (props: Partial<BuildingProps>) => void;
-  resetBuildingProps: () => void;
-  randomizeSeed: () => void;
-  setBuilding: (building: BuildingItem[]) => void;
-  setScattered: (scattered: boolean) => void;
-
-  // scene props
-  setSceneProps: (props: Partial<SceneProps>) => void;
-
-  // worker
-  initWorker: () => void;
-  cleanupWorker: () => void;
-  sendWorkerMessage: (payload?: BuildingProps) => void;
-}
+import type { BuildingItem, BuildingProps, AppState } from "@/types";
 
 const createLogicWorker = (
   onMessage: (data: {

@@ -1,11 +1,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useAppStore } from "@/store";
 
-import * as THREE from "three";
-
-interface OrbitControlsLike {
-  target: THREE.Vector3;
-}
+import type { OrbitControlsLike } from "@/types";
 
 export default function CameraDebugger() {
   const setCamProps = useAppStore((s) => s.setCamProps);

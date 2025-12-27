@@ -1,8 +1,8 @@
 import { mulberry32 } from "@/etc/utils";
-import type { BuildingItem } from "@/types";
+import type { BuildingItem, BuildingProps } from "@/types";
 
 onmessage = async (event) => {
-  const { payload } = event.data;
+  const { payload }: { payload: BuildingProps } = event.data;
 
   console.log("worker: received payload", payload);
 

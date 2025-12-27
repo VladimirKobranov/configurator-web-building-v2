@@ -1,8 +1,7 @@
 import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
-import type { BuildingItem } from "@/types";
-// import { useAppStore } from "@/store";
+import type { BuildingItem, GLTFResult } from "@/types";
 
 // @ts-expect-error - GLB files are not recognized by TypeScript by default
 import buildingUrl from "@/assets/building.glb";
@@ -27,11 +26,6 @@ const MESH_KEYS = [
 ] as const;
 
 type MeshType = (typeof MESH_KEYS)[number];
-
-interface GLTFResult {
-  nodes: Record<string, THREE.Mesh>;
-  materials: Record<string, THREE.Material>;
-}
 
 export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
   const meshRefs: Record<MeshType, React.RefObject<THREE.InstancedMesh>> = {
