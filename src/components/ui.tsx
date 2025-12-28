@@ -100,6 +100,21 @@ export default function Ui() {
               onChange={(e) => setBuildingProps({ offset: +e.target.value })}
             />
           </li>
+
+          <li className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="brandmauer"
+              checked={buildingProps?.brandmauer || false}
+              onChange={(e) =>
+                setBuildingProps({ brandmauer: e.target.checked })
+              }
+            />
+            <label htmlFor="brandmauer" className="cursor-pointer">
+              Brandmauer
+            </label>
+          </li>
+
           <li>seed: {buildingProps?.randomSeed}</li>
           <li className="mb-4 mt-2">
             <div className="flex gap-2 flex-col w-full">

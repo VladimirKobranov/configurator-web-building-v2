@@ -21,6 +21,7 @@ export interface BuildingProps {
   sizeY: number;
   sizeZ: number;
   offset: number;
+  brandmauer: boolean;
   randomSeed: number;
 }
 
