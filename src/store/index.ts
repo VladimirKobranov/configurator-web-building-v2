@@ -45,8 +45,10 @@ export const useAppStore = create<AppState>()((set, get) => ({
   isScattered: false,
   buildingProps: buildingConfig,
   building: [],
+  selectedItem: null,
 
   // ACTIONS
+  setSelectedItem: (selectedItem) => set({ selectedItem }),
   // camera functions
   setAutoRotateSpeed: (speed) => set({ autoRotateSpeed: speed }),
 
@@ -83,7 +85,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
       randomSeed: Math.floor(rand() * 99999), // five digits
     });
   },
-  resetBuildingProps: () => set({ buildingProps: buildingConfig }),
+  resetBuildingProps: () =>
+    set({ buildingProps: buildingConfig, selectedItem: null }),
 
   setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
 
@@ -127,7 +130,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     const state = get();
     if (state.logicWorker) {
       // Reset scattered state when new build is requested
-      set({ isScattered: false, building: [] });
+      set({ isScattered: false, building: [], selectedItem: null });
       state.logicWorker.postMessage({ payload });
     }
   },

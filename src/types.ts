@@ -41,6 +41,12 @@ export interface AppState {
   autoUpdate: boolean;
   sceneProps: SceneProps;
 
+  // selection
+  selectedItem: { item: BuildingItem; type: string; instanceId: number } | null;
+  setSelectedItem: (
+    selection: { item: BuildingItem; type: string; instanceId: number } | null
+  ) => void;
+
   // actions
   // camera props
   setAutoUpdate: (autoUpdate: boolean) => void;

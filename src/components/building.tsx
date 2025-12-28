@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
+import { useAppStore } from "@/store";
 import type { BuildingItem, GLTFResult } from "@/types";
 
 // @ts-expect-error - GLB files are not recognized by TypeScript by default
@@ -64,6 +65,8 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     Object.values(meshRefs)
   );
 
+  const { selectedItem, setSelectedItem } = useAppStore();
+
   const { nodes } = useGLTF(buildingUrl) as unknown as GLTFResult;
 
   const groupedData = useMemo(() => {
@@ -79,11 +82,19 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     return groups;
   }, [data]);
 
+  const defaultColor = useMemo(() => new THREE.Color("#888888"), []);
+  const highlightColor = useMemo(() => new THREE.Color("#5f6a82"), []);
+
   useEffect(() => {
     Object.entries(stableMeshRefs).forEach(([type, ref]) => {
       const mesh = ref.current;
       const items = groupedData[type];
       if (!mesh || !items) return;
+
+      if (!mesh.instanceColor) {
+        const colorArray = new Float32Array(items.length * 3);
+        mesh.instanceColor = new THREE.InstancedBufferAttribute(colorArray, 3);
+      }
 
       items.forEach((item, i) => {
         tempObject.position.set(
@@ -95,15 +106,21 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         tempObject.rotation.set(0, item.rotationY || 0, 0);
         tempObject.updateMatrix();
         mesh.setMatrixAt(i, tempObject.matrix);
+
+        // Handle highlighting
+        const isSelected =
+          selectedItem?.type === type && selectedItem?.instanceId === i;
+        mesh.setColorAt(i, isSelected ? highlightColor : defaultColor);
       });
       mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     });
-  }, [groupedData, stableMeshRefs]);
+  }, [groupedData, stableMeshRefs, selectedItem, defaultColor, highlightColor]);
 
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#888888",
+        color: "#ffffff", // Use white so instance colors show through accurately
         roughness: 0.7,
         side: THREE.DoubleSide,
       }),
@@ -127,13 +144,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     if (!items || instanceId >= items.length) return;
 
     const item = items[instanceId];
-    console.log("=== Building Element Debug ===");
-    console.log("Mesh Type:", type);
-    console.log("Position:", item.position);
-    console.log("Rotation Y:", item.rotationY);
-    console.log("Side Index:", item.sideIndex);
-    console.log("Full Data:", item);
-    console.log("=============================");
+    setSelectedItem({ item, type, instanceId });
   };
 
   return (
