@@ -14,13 +14,14 @@ onmessage = async (event) => {
   const sizeZ = payload?.sizeZ || 10;
   const offset = payload?.offset || 0;
   const seed = payload?.randomSeed || 12345;
+  const brandmauer = payload?.brandmauer || false;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}`
   );
 
   const randGen = mulberry32(seed); // Re-init for generation to be clean
-  const rawHouse = buildHouse(sizeX, sizeY, sizeZ, randGen);
+  const rawHouse = buildHouse(sizeX, sizeY, sizeZ, randGen, brandmauer);
 
   // Apply spacing and centering
   const spacing = 1 + offset;
@@ -70,7 +71,8 @@ function generateWallSide(
   axis: "x" | "z",
   rotationY: number,
   sideIndex: number,
-  rand: () => number
+  rand: () => number,
+  brandmauer: boolean
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -84,12 +86,23 @@ function generateWallSide(
       // Pick random variant index 0-3
       const variant = Math.floor(rand() * 4);
 
-      if (y === 0) {
-        type = `first_floor_${variant}`;
-      } else if (y === heightY - 1) {
-        type = "roof_wall_0";
+      const isSideBrandmauer =
+        brandmauer && (sideIndex === 2 || sideIndex === 3);
+
+      if (isSideBrandmauer) {
+        if (y === heightY - 1) {
+          type = "roof_wall_brandmauer";
+        } else {
+          type = "main_floor_brandmauer";
+        }
       } else {
-        type = `main_floor_${variant}`;
+        if (y === 0) {
+          type = `first_floor_${variant}`;
+        } else if (y === heightY - 1) {
+          type = "roof_wall_0";
+        } else {
+          type = `main_floor_${variant}`;
+        }
       }
 
       arr.push({
@@ -107,7 +120,8 @@ function buildHouse(
   sizeX: number,
   sizeY: number,
   sizeZ: number,
-  rand: () => number
+  rand: () => number,
+  brandmauer: boolean
 ) {
   const roof = generateRoof(sizeX, sizeZ, sizeY);
   const north = generateWallSide(
@@ -117,7 +131,8 @@ function buildHouse(
     "x",
     -Math.PI / 2,
     0,
-    rand
+    rand,
+    brandmauer
   );
   const south = generateWallSide(
     sizeX,
@@ -126,9 +141,19 @@ function buildHouse(
     "x",
     Math.PI / 2,
     1,
-    rand
+    rand,
+    brandmauer
   );
-  const west = generateWallSide(sizeZ, sizeY, { x: 0, z: 0 }, "z", 0, 2, rand);
+  const west = generateWallSide(
+    sizeZ,
+    sizeY,
+    { x: 0, z: 0 },
+    "z",
+    0,
+    2,
+    rand,
+    brandmauer
+  );
   const east = generateWallSide(
     sizeZ,
     sizeY,
@@ -136,7 +161,8 @@ function buildHouse(
     "z",
     Math.PI,
     3,
-    rand
+    rand,
+    brandmauer
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -171,6 +197,44 @@ function buildHouse(
       let type = "main_floor_corner";
       if (y === 0) type = "first_floor_corner";
       else if (y === sizeY - 1) type = "roof_corner";
+
+      if (brandmauer) {
+        if (y === 0) {
+          // first floor
+          if (x === sizeX - 1 && z === 0) {
+            // North-East corner
+            type = "first_floor_corner_brandmauer";
+          } else if (x === sizeX - 1 && z === sizeZ - 1) {
+            // South-East corner
+            type = "first_floor_corner_brandmauer_right";
+            rot -= Math.PI / 2;
+          } else if (x === 0 && z === 0) {
+            // North-West corner
+            type = "first_floor_corner_brandmauer_right";
+            rot -= Math.PI / 2;
+          } else if (x === 0 && z === sizeZ - 1) {
+            // South-West corner
+            type = "first_floor_corner_brandmauer";
+          }
+        } else if (y === sizeY - 1) {
+          // roof
+          if (x === sizeX - 1 && z === 0) {
+            // North-East corner
+            type = "roof_corner_brandmauer";
+          } else if (x === sizeX - 1 && z === sizeZ - 1) {
+            // South-East corner
+            type = "roof_corner_brandmauer_right";
+            rot -= Math.PI / 2;
+          } else if (x === 0 && z === 0) {
+            // North-West corner
+            type = "roof_corner_brandmauer_right";
+            rot -= Math.PI / 2;
+          } else if (x === 0 && z === sizeZ - 1) {
+            // South-West corner
+            type = "roof_corner_brandmauer";
+          }
+        }
+      }
 
       finalSegments.push({
         ...seg,

@@ -8,21 +8,27 @@ import buildingUrl from "@/assets/building.glb";
 
 const tempObject = new THREE.Object3D();
 
-// Define types
 const MESH_KEYS = [
   "first_floor_0",
   "first_floor_1",
   "first_floor_2",
   "first_floor_3",
   "first_floor_corner",
+  "first_floor_corner_brandmauer",
+  "first_floor_corner_brandmauer_right",
   "main_floor_0",
   "main_floor_1",
   "main_floor_2",
   "main_floor_3",
   "main_floor_corner",
+  "main_floor_brandmauer",
   "roof_cap",
   "roof_corner",
   "roof_wall_0",
+  "roof_wall_brandmauer",
+  "roof_corner_brandmauer",
+  "roof_corner_brandmauer_right",
+  "aircond1",
 ] as const;
 
 type MeshType = (typeof MESH_KEYS)[number];
@@ -34,14 +40,21 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     first_floor_2: useRef<THREE.InstancedMesh>(null!),
     first_floor_3: useRef<THREE.InstancedMesh>(null!),
     first_floor_corner: useRef<THREE.InstancedMesh>(null!),
+    first_floor_corner_brandmauer: useRef<THREE.InstancedMesh>(null!),
+    first_floor_corner_brandmauer_right: useRef<THREE.InstancedMesh>(null!),
     main_floor_0: useRef<THREE.InstancedMesh>(null!),
     main_floor_1: useRef<THREE.InstancedMesh>(null!),
     main_floor_2: useRef<THREE.InstancedMesh>(null!),
     main_floor_3: useRef<THREE.InstancedMesh>(null!),
     main_floor_corner: useRef<THREE.InstancedMesh>(null!),
+    main_floor_brandmauer: useRef<THREE.InstancedMesh>(null!),
     roof_cap: useRef<THREE.InstancedMesh>(null!),
     roof_corner: useRef<THREE.InstancedMesh>(null!),
     roof_wall_0: useRef<THREE.InstancedMesh>(null!),
+    roof_wall_brandmauer: useRef<THREE.InstancedMesh>(null!),
+    roof_corner_brandmauer: useRef<THREE.InstancedMesh>(null!),
+    roof_corner_brandmauer_right: useRef<THREE.InstancedMesh>(null!),
+    aircond1: useRef<THREE.InstancedMesh>(null!),
   };
 
   // Memoize meshRefs to keep the object stable across renders
@@ -109,6 +122,20 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     return config;
   }, [nodes]);
 
+  const handleClick = (type: string, instanceId: number) => {
+    const items = groupedData[type];
+    if (!items || instanceId >= items.length) return;
+
+    const item = items[instanceId];
+    console.log("=== Building Element Debug ===");
+    console.log("Mesh Type:", type);
+    console.log("Position:", item.position);
+    console.log("Rotation Y:", item.rotationY);
+    console.log("Side Index:", item.sideIndex);
+    console.log("Full Data:", item);
+    console.log("=============================");
+  };
+
   return (
     <group>
       {Object.entries(typeConfig).map(([type, config]) => {
@@ -122,6 +149,12 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
             args={[config.geometry, material, items.length]}
             castShadow
             receiveShadow
+            onClick={(e) => {
+              e.stopPropagation();
+              if (e.instanceId !== undefined) {
+                handleClick(type, e.instanceId);
+              }
+            }}
           />
         );
       })}
