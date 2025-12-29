@@ -29,7 +29,9 @@ const MESH_KEYS = [
   "roof_wall_brandmauer",
   "roof_corner_brandmauer",
   "roof_corner_brandmauer_right",
-  "aircond1",
+  "aircond_0",
+  "aircond_1",
+  "aircond_2",
 ] as const;
 
 type MeshType = (typeof MESH_KEYS)[number];
@@ -55,7 +57,9 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     roof_wall_brandmauer: useRef<THREE.InstancedMesh>(null!),
     roof_corner_brandmauer: useRef<THREE.InstancedMesh>(null!),
     roof_corner_brandmauer_right: useRef<THREE.InstancedMesh>(null!),
-    aircond1: useRef<THREE.InstancedMesh>(null!),
+    aircond_0: useRef<THREE.InstancedMesh>(null!),
+    aircond_1: useRef<THREE.InstancedMesh>(null!),
+    aircond_2: useRef<THREE.InstancedMesh>(null!),
   };
 
   // Memoize meshRefs to keep the object stable across renders

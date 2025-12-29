@@ -188,6 +188,7 @@ function buildHouse(
     const { x, y, z } = seg.position;
 
     if (isCorner) {
+      // Process structural corner
       let rot = 0;
       if (x === 0 && z === 0) rot = 0; // left top
       else if (x === sizeX - 1 && z === 0) rot = -Math.PI / 2; // right bottom
@@ -202,47 +203,61 @@ function buildHouse(
         if (y === 0) {
           // first floor
           if (x === sizeX - 1 && z === 0) {
-            // North-East corner
             type = "first_floor_corner_brandmauer";
           } else if (x === sizeX - 1 && z === sizeZ - 1) {
-            // South-East corner
             type = "first_floor_corner_brandmauer_right";
             rot -= Math.PI / 2;
           } else if (x === 0 && z === 0) {
-            // North-West corner
             type = "first_floor_corner_brandmauer_right";
             rot -= Math.PI / 2;
           } else if (x === 0 && z === sizeZ - 1) {
-            // South-West corner
             type = "first_floor_corner_brandmauer";
           }
         } else if (y === sizeY - 1) {
           // roof
           if (x === sizeX - 1 && z === 0) {
-            // North-East corner
             type = "roof_corner_brandmauer";
           } else if (x === sizeX - 1 && z === sizeZ - 1) {
-            // South-East corner
             type = "roof_corner_brandmauer_right";
             rot -= Math.PI / 2;
           } else if (x === 0 && z === 0) {
-            // North-West corner
             type = "roof_corner_brandmauer_right";
             rot -= Math.PI / 2;
           } else if (x === 0 && z === sizeZ - 1) {
-            // South-West corner
             type = "roof_corner_brandmauer";
           }
         }
       }
 
       finalSegments.push({
-        ...seg,
+        ...atPos[0],
         type,
         rotationY: rot,
       });
     } else {
-      finalSegments.push(seg);
+      // Process regular wall
+      const structural = atPos[0];
+      finalSegments.push(structural);
+
+      // Randomly place air conditioner on main floor windows
+      const isFirstFloor = y === 0;
+      const isLastFloor = y === sizeY - 1;
+      const isBrandmauer =
+        brandmauer &&
+        (structural.sideIndex === 2 || structural.sideIndex === 3);
+
+      if (!isFirstFloor && !isLastFloor && !isBrandmauer) {
+        if (rand() < 0.2) {
+          // 20% chance
+          const acVariant = Math.floor(rand() * 3);
+          finalSegments.push({
+            type: `aircond_${acVariant}`,
+            position: { x, y, z },
+            rotationY: structural.rotationY,
+            sideIndex: structural.sideIndex,
+          });
+        }
+      }
     }
   });
 
