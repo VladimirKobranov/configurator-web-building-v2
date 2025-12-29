@@ -117,6 +117,38 @@ export default function Ui() {
             </label>
           </li>
 
+          <li className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="aircond"
+              checked={buildingProps?.aircond || false}
+              onChange={(e) => setBuildingProps({ aircond: e.target.checked })}
+            />
+            <label htmlFor="aircond" className="cursor-pointer">
+              AC Unit
+            </label>
+          </li>
+
+          {buildingProps?.aircond && (
+            <li>
+              <div className="flex flex-col gap-1 mb-2">
+                <span className="text-sm">
+                  AC Density: {buildingProps?.aircondPercent}%
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={buildingProps?.aircondPercent || 0}
+                  onChange={(e) =>
+                    setBuildingProps({ aircondPercent: +e.target.value })
+                  }
+                />
+              </div>
+            </li>
+          )}
+
           <li>seed: {buildingProps?.randomSeed}</li>
           <li className="mb-4 mt-2">
             <div className="flex gap-2 flex-col w-full">
