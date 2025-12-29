@@ -15,13 +15,22 @@ onmessage = async (event) => {
   const offset = payload?.offset || 0;
   const seed = payload?.randomSeed || 12345;
   const brandmauer = payload?.brandmauer || false;
+  const aircond = payload?.aircond ?? false;
+  const aircondPercent = payload?.aircondPercent ?? 20;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}`
   );
 
-  const randGen = mulberry32(seed); // Re-init for generation to be clean
-  const rawHouse = buildHouse(sizeX, sizeY, sizeZ, randGen, brandmauer);
+  const rawHouse = buildHouse(
+    sizeX,
+    sizeY,
+    sizeZ,
+    seed,
+    brandmauer,
+    aircond,
+    aircondPercent
+  );
 
   // Apply spacing and centering
   const spacing = 1 + offset;
@@ -64,6 +73,12 @@ function generateRoof(sizeX: number, sizeZ: number, heightY: number) {
   return tiles;
 }
 
+// Helper for stable coordinate-based seeding
+function getCoordSeed(baseSeed: number, x: number, y: number, z: number) {
+  // Simple shift-and-xor hash to combine coordinates into a seed
+  return (baseSeed ^ (x * 73856093) ^ (y * 19349663) ^ (z * 83492791)) >>> 0;
+}
+
 function generateWallSide(
   length: number,
   heightY: number,
@@ -71,7 +86,7 @@ function generateWallSide(
   axis: "x" | "z",
   rotationY: number,
   sideIndex: number,
-  rand: () => number,
+  baseSeed: number,
   brandmauer: boolean
 ) {
   const arr = [];
@@ -81,6 +96,10 @@ function generateWallSide(
         ? { x: start.x + i, z: start.z }
         : { x: start.x, z: start.z + i };
     for (let y = 0; y < heightY; y++) {
+      // Use stable seed for each coordinate
+      const coordSeed = getCoordSeed(baseSeed, pos.x, y, pos.z);
+      const rand = mulberry32(coordSeed);
+
       let type = "unknown";
 
       // Pick random variant index 0-3
@@ -120,8 +139,10 @@ function buildHouse(
   sizeX: number,
   sizeY: number,
   sizeZ: number,
-  rand: () => number,
-  brandmauer: boolean
+  baseSeed: number,
+  brandmauer: boolean,
+  aircond: boolean,
+  aircondPercent: number
 ) {
   const roof = generateRoof(sizeX, sizeZ, sizeY);
   const north = generateWallSide(
@@ -131,7 +152,7 @@ function buildHouse(
     "x",
     -Math.PI / 2,
     0,
-    rand,
+    baseSeed,
     brandmauer
   );
   const south = generateWallSide(
@@ -141,7 +162,7 @@ function buildHouse(
     "x",
     Math.PI / 2,
     1,
-    rand,
+    baseSeed,
     brandmauer
   );
   const west = generateWallSide(
@@ -151,7 +172,7 @@ function buildHouse(
     "z",
     0,
     2,
-    rand,
+    baseSeed,
     brandmauer
   );
   const east = generateWallSide(
@@ -161,7 +182,7 @@ function buildHouse(
     "z",
     Math.PI,
     3,
-    rand,
+    baseSeed,
     brandmauer
   );
 
@@ -246,10 +267,14 @@ function buildHouse(
         brandmauer &&
         (structural.sideIndex === 2 || structural.sideIndex === 3);
 
-      if (!isFirstFloor && !isLastFloor && !isBrandmauer) {
-        if (rand() < 0.2) {
+      if (!isFirstFloor && !isLastFloor && !isBrandmauer && aircond) {
+        // Use a different salt for decorations to avoid correlation with wall variants
+        const decoSeed = getCoordSeed(baseSeed + 123, x, y, z);
+        const decoRand = mulberry32(decoSeed);
+
+        if (decoRand() * 100 < aircondPercent) {
           // 20% chance
-          const acVariant = Math.floor(rand() * 3);
+          const acVariant = Math.floor(decoRand() * 3);
           finalSegments.push({
             type: `aircond_${acVariant}`,
             position: { x, y, z },

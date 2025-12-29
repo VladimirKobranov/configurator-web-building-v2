@@ -41,6 +41,8 @@ export const buildingConfig = {
   sizeY: 5,
   sizeZ: 5,
   offset: 0.0,
+  aircond: true,
+  aircondPercent: 20,
   brandmauer: false,
   randomSeed: 52221,
 };

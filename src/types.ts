@@ -21,6 +21,8 @@ export interface BuildingProps {
   sizeY: number;
   sizeZ: number;
   offset: number;
+  aircond: boolean;
+  aircondPercent: number;
   brandmauer: boolean;
   randomSeed: number;
 }
