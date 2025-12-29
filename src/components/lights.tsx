@@ -13,7 +13,7 @@ export default function Lights() {
     sceneProps.showHelpers ? lightRef : null,
     THREE.DirectionalLightHelper,
     1,
-    "red"
+    "red",
   );
 
   // camera shadow helper (size)
@@ -27,12 +27,12 @@ export default function Lights() {
 
   const shadowCamRef = useMemo(
     () => (shadowCam ? { current: shadowCam } : null),
-    [shadowCam]
+    [shadowCam],
   );
 
   useHelper(
     sceneProps.showHelpers && shadowCamRef ? shadowCamRef : null,
-    THREE.CameraHelper
+    THREE.CameraHelper,
   );
 
   return (
