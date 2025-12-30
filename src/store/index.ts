@@ -9,7 +9,7 @@ const createLogicWorker = (
     status: string;
     result: BuildingItem[];
     dimensions: { sizeX: number; sizeY: number; sizeZ: number };
-  }) => void,
+  }) => void
 ) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",
@@ -130,7 +130,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     const state = get();
     if (state.logicWorker) {
       // Reset scattered state when new build is requested
-      set({ isScattered: false, building: [], selectedItem: null });
+      set({ selectedItem: null });
       state.logicWorker.postMessage({ payload });
     }
   },
