@@ -32,6 +32,10 @@ const MESH_KEYS = [
   "aircond_0",
   "aircond_1",
   "aircond_2",
+  "first_floor_acc_0",
+  "first_floor_acc_1",
+  "first_floor_acc_2",
+  "first_floor_acc_3",
 ] as const;
 
 type MeshType = (typeof MESH_KEYS)[number];
@@ -60,13 +64,17 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     aircond_0: useRef<THREE.InstancedMesh>(null!),
     aircond_1: useRef<THREE.InstancedMesh>(null!),
     aircond_2: useRef<THREE.InstancedMesh>(null!),
+    first_floor_acc_0: useRef<THREE.InstancedMesh>(null!),
+    first_floor_acc_1: useRef<THREE.InstancedMesh>(null!),
+    first_floor_acc_2: useRef<THREE.InstancedMesh>(null!),
+    first_floor_acc_3: useRef<THREE.InstancedMesh>(null!),
   };
 
   // Memoize meshRefs to keep the object stable across renders
   const stableMeshRefs = useMemo(
     () => meshRefs,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    Object.values(meshRefs),
+    Object.values(meshRefs)
   );
 
   const { selectedItem, setSelectedItem } = useAppStore();
@@ -104,7 +112,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         tempObject.position.set(
           item.position.x,
           item.position.y,
-          item.position.z,
+          item.position.z
         );
 
         tempObject.rotation.set(0, item.rotationY || 0, 0);
@@ -128,7 +136,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         roughness: 0.7,
         side: THREE.DoubleSide,
       }),
-    [],
+    []
   );
 
   const typeConfig = useMemo(() => {

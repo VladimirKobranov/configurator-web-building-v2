@@ -17,9 +17,11 @@ onmessage = async (event) => {
   const brandmauer = payload?.brandmauer || false;
   const aircond = payload?.aircond ?? false;
   const aircondPercent = payload?.aircondPercent ?? 20;
+  const firstFloorAcc = payload?.firstFloorAcc ?? false;
+  const firstFloorAccPercent = payload?.firstFloorAccPercent ?? 20;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}`,
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}`
   );
 
   const rawHouse = buildHouse(
@@ -30,6 +32,8 @@ onmessage = async (event) => {
     brandmauer,
     aircond,
     aircondPercent,
+    firstFloorAcc,
+    firstFloorAccPercent
   );
 
   // Apply spacing and centering
@@ -87,7 +91,7 @@ function generateWallSide(
   rotationY: number,
   sideIndex: number,
   baseSeed: number,
-  brandmauer: boolean,
+  brandmauer: boolean
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -143,6 +147,8 @@ function buildHouse(
   brandmauer: boolean,
   aircond: boolean,
   aircondPercent: number,
+  firstFloorAcc: boolean,
+  firstFloorAccPercent: number
 ) {
   const roof = generateRoof(sizeX, sizeZ, sizeY);
   const north = generateWallSide(
@@ -153,7 +159,7 @@ function buildHouse(
     -Math.PI / 2,
     0,
     baseSeed,
-    brandmauer,
+    brandmauer
   );
   const south = generateWallSide(
     sizeX,
@@ -163,7 +169,7 @@ function buildHouse(
     Math.PI / 2,
     1,
     baseSeed,
-    brandmauer,
+    brandmauer
   );
   const west = generateWallSide(
     sizeZ,
@@ -173,7 +179,7 @@ function buildHouse(
     0,
     2,
     baseSeed,
-    brandmauer,
+    brandmauer
   );
   const east = generateWallSide(
     sizeZ,
@@ -183,7 +189,7 @@ function buildHouse(
     Math.PI,
     3,
     baseSeed,
-    brandmauer,
+    brandmauer
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -211,12 +217,9 @@ function buildHouse(
     if (isCorner) {
       // Process structural corner
       let rot = 0;
-      if (x === 0 && z === 0)
-        rot = 0; // left top
-      else if (x === sizeX - 1 && z === 0)
-        rot = -Math.PI / 2; // right bottom
-      else if (x === sizeX - 1 && z === sizeZ - 1)
-        rot = Math.PI; // right top
+      if (x === 0 && z === 0) rot = 0; // left top
+      else if (x === sizeX - 1 && z === 0) rot = -Math.PI / 2; // right bottom
+      else if (x === sizeX - 1 && z === sizeZ - 1) rot = Math.PI; // right top
       else if (x === 0 && z === sizeZ - 1) rot = Math.PI / 2; // left bottom
 
       let type = "main_floor_corner";
@@ -280,6 +283,23 @@ function buildHouse(
           const acVariant = Math.floor(decoRand() * 3);
           finalSegments.push({
             type: `aircond_${acVariant}`,
+            position: { x, y, z },
+            rotationY: structural.rotationY,
+            sideIndex: structural.sideIndex,
+          });
+        }
+      }
+
+      // Randomly place first floor accessories
+      if (y === 0 && !isBrandmauer && firstFloorAcc) {
+        // Use a different salt for first floor accessories
+        const accSeed = getCoordSeed(baseSeed + 456, x, y, z);
+        const accRand = mulberry32(accSeed);
+
+        if (accRand() * 100 < firstFloorAccPercent) {
+          const accVariant = Math.floor(accRand() * 4);
+          finalSegments.push({
+            type: `first_floor_acc_${accVariant}`,
             position: { x, y, z },
             rotationY: structural.rotationY,
             sideIndex: structural.sideIndex,

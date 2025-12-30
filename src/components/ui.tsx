@@ -149,6 +149,40 @@ export default function Ui() {
             </li>
           )}
 
+          <li className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="firstFloorAcc"
+              checked={buildingProps?.firstFloorAcc || false}
+              onChange={(e) =>
+                setBuildingProps({ firstFloorAcc: e.target.checked })
+              }
+            />
+            <label htmlFor="firstFloorAcc" className="cursor-pointer">
+              First Floor Acc
+            </label>
+          </li>
+
+          {buildingProps?.firstFloorAcc && (
+            <li>
+              <div className="flex flex-col gap-1 mb-2">
+                <span className="text-sm">
+                  Acc Density: {buildingProps?.firstFloorAccPercent}%
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={buildingProps?.firstFloorAccPercent || 0}
+                  onChange={(e) =>
+                    setBuildingProps({ firstFloorAccPercent: +e.target.value })
+                  }
+                />
+              </div>
+            </li>
+          )}
+
           <li>seed: {buildingProps?.randomSeed}</li>
           <li className="mb-4 mt-2">
             <div className="flex gap-2 flex-col w-full">

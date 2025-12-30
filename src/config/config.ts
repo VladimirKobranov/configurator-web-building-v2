@@ -43,6 +43,8 @@ export const buildingConfig = {
   offset: 0.0,
   aircond: true,
   aircondPercent: 20,
+  firstFloorAcc: true,
+  firstFloorAccPercent: 20,
   brandmauer: false,
   randomSeed: 52221,
 };

@@ -23,6 +23,8 @@ export interface BuildingProps {
   offset: number;
   aircond: boolean;
   aircondPercent: number;
+  firstFloorAcc: boolean;
+  firstFloorAccPercent: number;
   brandmauer: boolean;
   randomSeed: number;
 }
@@ -46,7 +48,7 @@ export interface AppState {
   // selection
   selectedItem: { item: BuildingItem; type: string; instanceId: number } | null;
   setSelectedItem: (
-    selection: { item: BuildingItem; type: string; instanceId: number } | null,
+    selection: { item: BuildingItem; type: string; instanceId: number } | null
   ) => void;
 
   // actions
