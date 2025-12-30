@@ -44,9 +44,9 @@ export const buildingConfig = {
   aircond: true,
   aircondPercent: 20,
   firstFloorAcc: true,
-  firstFloorAccPercent: 20,
+  firstFloorAccPercent: 50,
   roofAcc: true,
-  roofAccPercent: 48,
+  roofAccPercent: 50,
   brandmauer: false,
   randomSeed: 52221,
 };
