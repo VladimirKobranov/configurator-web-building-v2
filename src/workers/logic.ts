@@ -19,9 +19,11 @@ onmessage = async (event) => {
   const aircondPercent = payload?.aircondPercent ?? 20;
   const firstFloorAcc = payload?.firstFloorAcc ?? false;
   const firstFloorAccPercent = payload?.firstFloorAccPercent ?? 20;
+  const roofAcc = payload?.roofAcc ?? false;
+  const roofAccPercent = payload?.roofAccPercent ?? 20;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}`
   );
 
   const rawHouse = buildHouse(
@@ -33,7 +35,9 @@ onmessage = async (event) => {
     aircond,
     aircondPercent,
     firstFloorAcc,
-    firstFloorAccPercent
+    firstFloorAccPercent,
+    roofAcc,
+    roofAccPercent
   );
 
   // Apply spacing and centering
@@ -60,7 +64,14 @@ onmessage = async (event) => {
   });
 };
 
-function generateRoof(sizeX: number, sizeZ: number, heightY: number) {
+function generateRoof(
+  sizeX: number,
+  sizeZ: number,
+  heightY: number,
+  baseSeed: number,
+  roofAcc: boolean,
+  roofAccPercent: number
+) {
   const tiles = [];
   for (let x = 0; x < sizeX; x++) {
     for (let z = 0; z < sizeZ; z++) {
@@ -71,6 +82,21 @@ function generateRoof(sizeX: number, sizeZ: number, heightY: number) {
           position: { x, y: heightY - 1, z },
           rotationY: 0,
         });
+
+        if (roofAcc) {
+          // Use stable seed for roof accessories
+          const accSeed = getCoordSeed(baseSeed + 789, x, heightY - 1, z);
+          const accRand = mulberry32(accSeed);
+
+          if (accRand() * 100 < roofAccPercent) {
+            const accVariant = Math.floor(accRand() * 3);
+            tiles.push({
+              type: `roof_acc_${accVariant}`,
+              position: { x, y: heightY - 1, z },
+              rotationY: Math.floor(accRand() * 4) * (Math.PI / 2),
+            });
+          }
+        }
       }
     }
   }
@@ -148,9 +174,18 @@ function buildHouse(
   aircond: boolean,
   aircondPercent: number,
   firstFloorAcc: boolean,
-  firstFloorAccPercent: number
+  firstFloorAccPercent: number,
+  roofAcc: boolean,
+  roofAccPercent: number
 ) {
-  const roof = generateRoof(sizeX, sizeZ, sizeY);
+  const roof = generateRoof(
+    sizeX,
+    sizeZ,
+    sizeY,
+    baseSeed,
+    roofAcc,
+    roofAccPercent
+  );
   const north = generateWallSide(
     sizeX,
     sizeY,

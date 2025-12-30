@@ -183,6 +183,38 @@ export default function Ui() {
             </li>
           )}
 
+          <li className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="roofAcc"
+              checked={buildingProps?.roofAcc || false}
+              onChange={(e) => setBuildingProps({ roofAcc: e.target.checked })}
+            />
+            <label htmlFor="roofAcc" className="cursor-pointer">
+              Roof Acc
+            </label>
+          </li>
+
+          {buildingProps?.roofAcc && (
+            <li>
+              <div className="flex flex-col gap-1 mb-2">
+                <span className="text-sm">
+                  Roof Acc Density: {buildingProps?.roofAccPercent}%
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={buildingProps?.roofAccPercent || 0}
+                  onChange={(e) =>
+                    setBuildingProps({ roofAccPercent: +e.target.value })
+                  }
+                />
+              </div>
+            </li>
+          )}
+
           <li>seed: {buildingProps?.randomSeed}</li>
           <li className="mb-4 mt-2">
             <div className="flex gap-2 flex-col w-full">

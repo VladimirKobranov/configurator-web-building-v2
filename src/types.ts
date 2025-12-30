@@ -25,6 +25,8 @@ export interface BuildingProps {
   aircondPercent: number;
   firstFloorAcc: boolean;
   firstFloorAccPercent: number;
+  roofAcc: boolean;
+  roofAccPercent: number;
   brandmauer: boolean;
   randomSeed: number;
 }
