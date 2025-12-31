@@ -22,9 +22,11 @@ onmessage = async (event) => {
   const roofAcc = payload?.roofAcc ?? false;
   const roofAccPercent = payload?.roofAccPercent ?? 20;
   const stairs = payload?.stairs ?? false;
+  const stairsIndex = payload?.stairsIndex ?? 1;
+  const stairsSide = payload?.stairsSide ?? 0;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}, stairsIndex ${stairsIndex}, stairsSide ${stairsSide}`
   );
 
   const rawHouse = buildHouse(
@@ -39,7 +41,9 @@ onmessage = async (event) => {
     firstFloorAccPercent,
     roofAcc,
     roofAccPercent,
-    stairs
+    stairs,
+    stairsIndex,
+    stairsSide
   );
 
   // Apply spacing and centering
@@ -208,7 +212,9 @@ function buildHouse(
   firstFloorAccPercent: number,
   roofAcc: boolean,
   roofAccPercent: number,
-  stairs: boolean
+  stairs: boolean,
+  stairsIndex: number,
+  stairsSide: number
 ) {
   const roof = generateRoof(
     sizeX,
@@ -220,22 +226,13 @@ function buildHouse(
   );
 
   // Determine stair location
-  let stairSide = -1;
-  let stairIndex = -1;
+  // Use config values directly
+  let usedStairSide = -1;
+  let usedStairIndex = -1;
 
   if (stairs) {
-    const stairRand = mulberry32(baseSeed + 999);
-    const candidates = [];
-    if (sizeX > 2) candidates.push(0, 1);
-    // Only allow stairs on Z sides if sizeZ > 2
-    if (sizeZ > 2) candidates.push(2, 3);
-
-    if (candidates.length > 0) {
-      stairSide = candidates[Math.floor(stairRand() * candidates.length)];
-      const len = stairSide === 0 || stairSide === 1 ? sizeX : sizeZ;
-      // Index 1 to len-2 (inclusive) to avoid corners
-      stairIndex = 1 + Math.floor(stairRand() * (len - 2));
-    }
+    usedStairSide = stairsSide;
+    usedStairIndex = stairsIndex;
   }
 
   const north = generateWallSide(
@@ -247,7 +244,7 @@ function buildHouse(
     0,
     baseSeed,
     brandmauer,
-    stairSide === 0 ? stairIndex : -1
+    usedStairSide === 0 ? usedStairIndex : -1
   );
   const south = generateWallSide(
     sizeX,
@@ -258,7 +255,7 @@ function buildHouse(
     1,
     baseSeed,
     brandmauer,
-    stairSide === 1 ? stairIndex : -1
+    usedStairSide === 1 ? usedStairIndex : -1
   );
   const west = generateWallSide(
     sizeZ,
@@ -269,7 +266,7 @@ function buildHouse(
     2,
     baseSeed,
     brandmauer,
-    stairSide === 2 ? stairIndex : -1
+    usedStairSide === 2 ? usedStairIndex : -1
   );
   const east = generateWallSide(
     sizeZ,
@@ -280,7 +277,7 @@ function buildHouse(
     3,
     baseSeed,
     brandmauer,
-    stairSide === 3 ? stairIndex : -1
+    usedStairSide === 3 ? usedStairIndex : -1
   );
 
   const allWalls = [...north, ...south, ...west, ...east];

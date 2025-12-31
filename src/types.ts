@@ -28,6 +28,8 @@ export interface BuildingProps {
   roofAcc: boolean;
   roofAccPercent: number;
   stairs: boolean;
+  stairsIndex: number;
+  stairsSide: number;
   brandmauer: boolean;
   randomSeed: number;
 }
