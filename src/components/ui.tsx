@@ -106,6 +106,62 @@ export default function Ui() {
           <li className="mb-2 flex items-center gap-2">
             <input
               type="checkbox"
+              id="stairs"
+              checked={buildingProps?.stairs || false}
+              onChange={(e) => setBuildingProps({ stairs: e.target.checked })}
+            />
+            <label htmlFor="stairs" className="cursor-pointer">
+              Stairs
+            </label>
+          </li>
+
+          {buildingProps?.stairs && (
+            <>
+              <li>
+                <div className="flex flex-col gap-1 mb-2">
+                  <span className="text-sm">
+                    Stairs Side: {buildingProps?.stairsSide}
+                  </span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={3}
+                    step={1}
+                    value={buildingProps?.stairsSide || 0}
+                    onChange={(e) =>
+                      setBuildingProps({ stairsSide: +e.target.value })
+                    }
+                  />
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-col gap-1 mb-2">
+                  <span className="text-sm">
+                    Stairs Index: {buildingProps?.stairsIndex}
+                  </span>
+                  <input
+                    type="range"
+                    min={1}
+                    max={
+                      ((buildingProps?.stairsSide === 0 ||
+                      buildingProps?.stairsSide === 1
+                        ? buildingProps?.sizeX
+                        : buildingProps?.sizeZ) || 10) - 2
+                    }
+                    step={1}
+                    value={buildingProps?.stairsIndex || 1}
+                    onChange={(e) =>
+                      setBuildingProps({ stairsIndex: +e.target.value })
+                    }
+                  />
+                </div>
+              </li>
+            </>
+          )}
+
+          <li className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
               id="brandmauer"
               checked={buildingProps?.brandmauer || false}
               onChange={(e) =>
