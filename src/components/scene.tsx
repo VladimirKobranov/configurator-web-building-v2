@@ -10,7 +10,7 @@ import {
 import { useAppStore } from "@/store";
 import { gridConfig, orbitControlsConfig } from "@/config/config";
 import CameraDebugger from "@/components/camera_debugger";
-import { InstancedBuilding } from "@/components/building";
+import { InstancedBuilding } from "@/components/Building";
 import ShadowCatcher from "@/components/shadow_catcher";
 import Lights from "./lights";
 

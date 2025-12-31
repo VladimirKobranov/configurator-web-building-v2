@@ -1,0 +1,41 @@
+import { useAppStore } from "@/store";
+
+export function CameraProps() {
+  const { camProps, setCamProps, autoRotateSpeed, setAutoRotateSpeed } =
+    useAppStore();
+
+  const fmt = (v: number[]) => v.map((n) => n.toFixed(2)).join(", ");
+
+  return (
+    <div>
+      <h2 className="text-lg font-bold">Camera props:</h2>
+      <ul>
+        <li>position: [{fmt(camProps.position)}]</li>
+        <li>target: [{fmt(camProps.target)}]</li>
+        <li>rotation: [{fmt(camProps.rotation)}]</li>
+        <li>fov: {camProps.fov.toFixed(3)}</li>
+      </ul>
+
+      <input
+        type="range"
+        min={20}
+        max={120}
+        step={1}
+        value={camProps.fov}
+        onChange={(e) => setCamProps({ fov: +e.target.value })}
+      />
+
+      <div className="mb-4">
+        <h3>Auto Rotate speed: {autoRotateSpeed}</h3>
+        <input
+          type="range"
+          min={0}
+          max={5}
+          step={0.25}
+          value={autoRotateSpeed}
+          onChange={(e) => setAutoRotateSpeed(+e.target.value)}
+        />
+      </div>
+    </div>
+  );
+}
