@@ -49,7 +49,7 @@ export const buildingConfig = {
   roofAccPercent: 50,
   brandmauer: false,
   stairs: true,
-  stairsIndex: 2,
+  stairsIndex: 4,
   stairsSide: 1,
   randomSeed: 52221,
 };

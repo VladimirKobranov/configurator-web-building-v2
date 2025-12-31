@@ -198,206 +198,206 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
 }
 
 export function Model(props: React.ComponentPropsWithoutRef<"group">) {
-  const { nodes } = useGLTF(buildingUrl) as unknown as GLTFResult;
+  const { nodes, materials } = useGLTF(buildingUrl) as unknown as GLTFResult;
   return (
     <group {...props} dispose={null}>
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallCorner.geometry}
-        material={nodes.MainWallCorner.material}
+        geometry={nodes.main_floor_corner.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofcap1.geometry}
-        material={nodes.roofcap1.material}
+        geometry={nodes.roof_cap.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofmainwall1.geometry}
-        material={nodes.roofmainwall1.material}
+        geometry={nodes.roof_wall_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofcorner1.geometry}
-        material={nodes.roofcorner1.material}
+        geometry={nodes.roof_corner.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorwall1.geometry}
-        material={nodes.firstfloorwall1.material}
+        geometry={nodes.first_floor_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorcorner1.geometry}
-        material={nodes.firstfloorcorner1.material}
+        geometry={nodes.first_floor_corner.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.aircond1.geometry}
-        material={nodes.aircond1.material}
+        geometry={nodes.aircond_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallWindow2.geometry}
-        material={nodes.MainWallWindow2.material}
+        geometry={nodes.main_floor_1.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallWindow3.geometry}
-        material={nodes.MainWallWindow3.material}
+        geometry={nodes.main_floor_2.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallWindow4.geometry}
-        material={nodes.MainWallWindow4.material}
+        geometry={nodes.main_floor_3.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.aircond2.geometry}
-        material={nodes.aircond2.material}
+        geometry={nodes.aircond_1.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofaccessories1.geometry}
-        material={nodes.roofaccessories1.material}
+        geometry={nodes.roof_acc_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofaccessories2.geometry}
-        material={nodes.roofaccessories2.material}
+        geometry={nodes.roof_acc_1.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofaccessories3.geometry}
-        material={nodes.roofaccessories3.material}
+        geometry={nodes.roof_acc_2.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorwall2.geometry}
-        material={nodes.firstfloorwall2.material}
+        geometry={nodes.first_floor_1.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallWindow1.geometry}
-        material={nodes.MainWallWindow1.material}
+        geometry={nodes.main_floor_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.aircond3.geometry}
-        material={nodes.aircond3.material}
+        geometry={nodes.aircond_2.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorwall3.geometry}
-        material={nodes.firstfloorwall3.material}
+        geometry={nodes.first_floor_2.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorwall4.geometry}
-        material={nodes.firstfloorwall4.material}
+        geometry={nodes.first_floor_3.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstflooraccessories1.geometry}
-        material={nodes.firstflooraccessories1.material}
+        geometry={nodes.first_floor_acc_0.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstflooraccessories2.geometry}
-        material={nodes.firstflooraccessories2.material}
+        geometry={nodes.first_floor_acc_1.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstflooraccessories3.geometry}
-        material={nodes.firstflooraccessories3.material}
+        geometry={nodes.first_floor_acc_2.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstflooraccessories4.geometry}
-        material={nodes.firstflooraccessories4.material}
+        geometry={nodes.first_floor_acc_3.geometry}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.roof_corner_brandmauer.geometry}
-        material={nodes.roof_corner_brandmauer.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.first_floor_corner_brandmauer.geometry}
-        material={nodes.first_floor_corner_brandmauer.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.roof_wall_brandmauer.geometry}
-        material={nodes.roof_wall_brandmauer.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.main_floor_brandmauer.geometry}
-        material={nodes.main_floor_brandmauer.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.stairs_main_floor.geometry}
-        material={nodes.stairs_main_floor.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.stairs_last_floor.geometry}
-        material={nodes.stairs_last_floor.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.stairs_second_floor.geometry}
-        material={nodes.stairs_second_floor.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.laundry1.geometry}
-        material={nodes.laundry1.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.first_floor_corner_brandmauer_right.geometry}
-        material={nodes.first_floor_corner_brandmauer_right.material}
+        material={materials.Material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.roof_corner_brandmauer_right.geometry}
-        material={nodes.roof_corner_brandmauer_right.material}
+        material={materials.Material}
       />
     </group>
   );
