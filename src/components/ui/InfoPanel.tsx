@@ -23,6 +23,12 @@ export function InfoPanel() {
           {selectedItem.item.sideIndex !== undefined && (
             <li>Side Index: {selectedItem.item.sideIndex}</li>
           )}
+          {selectedItem.geometryStats && (
+            <>
+              <li>Triangles: {selectedItem.geometryStats.triangles}</li>
+              <li>Vertices: {selectedItem.geometryStats.vertices}</li>
+            </>
+          )}
         </ul>
         <button
           className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded w-full"

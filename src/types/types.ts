@@ -39,6 +39,11 @@ export interface SceneProps {
   showHelpers: boolean;
 }
 
+export interface GeometryStats {
+  triangles: number;
+  vertices: number;
+}
+
 export interface AppState {
   // init states
   autoRotateSpeed: number;
@@ -51,9 +56,19 @@ export interface AppState {
   sceneProps: SceneProps;
 
   // selection
-  selectedItem: { item: BuildingItem; type: string; instanceId: number } | null;
+  selectedItem: {
+    item: BuildingItem;
+    type: string;
+    instanceId: number;
+    geometryStats?: GeometryStats;
+  } | null;
   setSelectedItem: (
-    selection: { item: BuildingItem; type: string; instanceId: number } | null,
+    selection: {
+      item: BuildingItem;
+      type: string;
+      instanceId: number;
+      geometryStats?: GeometryStats;
+    } | null
   ) => void;
 
   // actions
