@@ -48,5 +48,6 @@ export const buildingConfig = {
   roofAcc: true,
   roofAccPercent: 50,
   brandmauer: false,
+  stairs: true,
   randomSeed: 52221,
 };

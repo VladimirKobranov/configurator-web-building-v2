@@ -21,9 +21,10 @@ onmessage = async (event) => {
   const firstFloorAccPercent = payload?.firstFloorAccPercent ?? 20;
   const roofAcc = payload?.roofAcc ?? false;
   const roofAccPercent = payload?.roofAccPercent ?? 20;
+  const stairs = payload?.stairs ?? false;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}`
   );
 
   const rawHouse = buildHouse(
@@ -37,7 +38,8 @@ onmessage = async (event) => {
     firstFloorAcc,
     firstFloorAccPercent,
     roofAcc,
-    roofAccPercent
+    roofAccPercent,
+    stairs
   );
 
   // Apply spacing and centering
@@ -117,7 +119,8 @@ function generateWallSide(
   rotationY: number,
   sideIndex: number,
   baseSeed: number,
-  brandmauer: boolean
+  brandmauer: boolean,
+  stairIndex: number = -1
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -130,8 +133,8 @@ function generateWallSide(
       const coordSeed = getCoordSeed(baseSeed, pos.x, y, pos.z);
       const rand = mulberry32(coordSeed);
 
+      // Normal wall generation (ALWAYS)
       let type = "unknown";
-
       // Pick random variant index 0-3
       const variant = Math.floor(rand() * 4);
 
@@ -160,6 +163,34 @@ function generateWallSide(
         rotationY,
         sideIndex,
       });
+
+      // Check if this column is designated for stairs (ADDITIVE)
+      if (i === stairIndex) {
+        let stairType = "unknown";
+        let shouldAdd = false;
+
+        if (y === 1) {
+          // Start from second floor
+          stairType = "stairs_second_floor";
+          shouldAdd = true;
+        } else if (y === heightY - 1) {
+          stairType = "stairs_last_floor";
+          shouldAdd = true;
+        } else if (y > 1) {
+          // Intermediate floors (above 2nd, below roof)
+          stairType = "stairs_main_floor";
+          shouldAdd = true;
+        }
+
+        if (shouldAdd) {
+          arr.push({
+            type: stairType,
+            position: { x: pos.x, y, z: pos.z },
+            rotationY,
+            sideIndex,
+          });
+        }
+      }
     }
   }
   return arr;
@@ -176,7 +207,8 @@ function buildHouse(
   firstFloorAcc: boolean,
   firstFloorAccPercent: number,
   roofAcc: boolean,
-  roofAccPercent: number
+  roofAccPercent: number,
+  stairs: boolean
 ) {
   const roof = generateRoof(
     sizeX,
@@ -186,6 +218,26 @@ function buildHouse(
     roofAcc,
     roofAccPercent
   );
+
+  // Determine stair location
+  let stairSide = -1;
+  let stairIndex = -1;
+
+  if (stairs) {
+    const stairRand = mulberry32(baseSeed + 999);
+    const candidates = [];
+    if (sizeX > 2) candidates.push(0, 1);
+    // Only allow stairs on Z sides if sizeZ > 2
+    if (sizeZ > 2) candidates.push(2, 3);
+
+    if (candidates.length > 0) {
+      stairSide = candidates[Math.floor(stairRand() * candidates.length)];
+      const len = stairSide === 0 || stairSide === 1 ? sizeX : sizeZ;
+      // Index 1 to len-2 (inclusive) to avoid corners
+      stairIndex = 1 + Math.floor(stairRand() * (len - 2));
+    }
+  }
+
   const north = generateWallSide(
     sizeX,
     sizeY,
@@ -194,7 +246,8 @@ function buildHouse(
     -Math.PI / 2,
     0,
     baseSeed,
-    brandmauer
+    brandmauer,
+    stairSide === 0 ? stairIndex : -1
   );
   const south = generateWallSide(
     sizeX,
@@ -204,7 +257,8 @@ function buildHouse(
     Math.PI / 2,
     1,
     baseSeed,
-    brandmauer
+    brandmauer,
+    stairSide === 1 ? stairIndex : -1
   );
   const west = generateWallSide(
     sizeZ,
@@ -214,7 +268,8 @@ function buildHouse(
     0,
     2,
     baseSeed,
-    brandmauer
+    brandmauer,
+    stairSide === 2 ? stairIndex : -1
   );
   const east = generateWallSide(
     sizeZ,
@@ -224,7 +279,8 @@ function buildHouse(
     Math.PI,
     3,
     baseSeed,
-    brandmauer
+    brandmauer,
+    stairSide === 3 ? stairIndex : -1
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -246,7 +302,11 @@ function buildHouse(
     seen.add(key);
 
     const atPos = posMap.get(key)!;
-    const isCorner = atPos.length > 1;
+
+    // Determine if it is a structural corner by checking if segments come from different sides
+    const uniqueSides = new Set(atPos.map((i) => i.sideIndex));
+    const isCorner = uniqueSides.size > 1;
+
     const { x, y, z } = seg.position;
 
     if (isCorner) {
@@ -297,9 +357,12 @@ function buildHouse(
         rotationY: rot,
       });
     } else {
-      // Process regular wall
+      // Process regular wall or stacked items (Wall + Stair)
+      // Push all items found at this position
+      atPos.forEach((item) => finalSegments.push(item));
+
+      // Use the wall segment as reference for accessories
       const structural = atPos[0];
-      finalSegments.push(structural);
 
       // Randomly place air conditioner on main floor windows
       const isFirstFloor = y === 0;
@@ -308,7 +371,16 @@ function buildHouse(
         brandmauer &&
         (structural.sideIndex === 2 || structural.sideIndex === 3);
 
-      if (!isFirstFloor && !isLastFloor && !isBrandmauer && aircond) {
+      // Check if ANY item at this position is a stair
+      const hasStair = atPos.some((item) => item.type.startsWith("stairs_"));
+
+      if (
+        !isFirstFloor &&
+        !isLastFloor &&
+        !isBrandmauer &&
+        !hasStair &&
+        aircond
+      ) {
         // Use a different salt for decorations to avoid correlation with wall variants
         const decoSeed = getCoordSeed(baseSeed + 123, x, y, z);
         const decoRand = mulberry32(decoSeed);
@@ -326,7 +398,7 @@ function buildHouse(
       }
 
       // Randomly place first floor accessories
-      if (y === 0 && !isBrandmauer && firstFloorAcc) {
+      if (y === 0 && !isBrandmauer && !hasStair && firstFloorAcc) {
         // Use a different salt for first floor accessories
         const accSeed = getCoordSeed(baseSeed + 456, x, y, z);
         const accRand = mulberry32(accSeed);

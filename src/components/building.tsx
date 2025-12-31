@@ -39,6 +39,9 @@ const MESH_KEYS = [
   "roof_acc_0",
   "roof_acc_1",
   "roof_acc_2",
+  "stairs_second_floor",
+  "stairs_main_floor",
+  "stairs_last_floor",
 ] as const;
 
 type MeshType = (typeof MESH_KEYS)[number];
@@ -74,6 +77,9 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     roof_acc_0: useRef<THREE.InstancedMesh>(null!),
     roof_acc_1: useRef<THREE.InstancedMesh>(null!),
     roof_acc_2: useRef<THREE.InstancedMesh>(null!),
+    stairs_second_floor: useRef<THREE.InstancedMesh>(null!),
+    stairs_main_floor: useRef<THREE.InstancedMesh>(null!),
+    stairs_last_floor: useRef<THREE.InstancedMesh>(null!),
   };
 
   // Memoize meshRefs to keep the object stable across renders
@@ -336,52 +342,62 @@ export function Model(props: React.ComponentPropsWithoutRef<"group">) {
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofcornerbrandmauer1.geometry}
-        material={nodes.roofcornerbrandmauer1.material}
+        geometry={nodes.roof_corner_brandmauer.geometry}
+        material={nodes.roof_corner_brandmauer.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.firstfloorcornerbrandmauer1.geometry}
-        material={nodes.firstfloorcornerbrandmauer1.material}
+        geometry={nodes.first_floor_corner_brandmauer.geometry}
+        material={nodes.first_floor_corner_brandmauer.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.roofmainwallbrandmauer1.geometry}
-        material={nodes.roofmainwallbrandmauer1.material}
+        geometry={nodes.roof_wall_brandmauer.geometry}
+        material={nodes.roof_wall_brandmauer.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.MainWallbrandmauer1.geometry}
-        material={nodes.MainWallbrandmauer1.material}
+        geometry={nodes.main_floor_brandmauer.geometry}
+        material={nodes.main_floor_brandmauer.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.stairsmain001.geometry}
-        material={nodes.stairsmain001.material}
+        geometry={nodes.stairs_main_floor.geometry}
+        material={nodes.stairs_main_floor.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.stairslast.geometry}
-        material={nodes.stairslast.material}
-        scale={[0.4, 1, 0.429]}
+        geometry={nodes.stairs_last_floor.geometry}
+        material={nodes.stairs_last_floor.material}
       />
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.stairsfirst.geometry}
-        material={nodes.stairsfirst.material}
-        scale={[0.4, 1, 0.429]}
+        geometry={nodes.stairs_second_floor.geometry}
+        material={nodes.stairs_second_floor.material}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.laundry1.geometry}
         material={nodes.laundry1.material}
+      />
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.first_floor_corner_brandmauer_right.geometry}
+        material={nodes.first_floor_corner_brandmauer_right.material}
+      />
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.roof_corner_brandmauer_right.geometry}
+        material={nodes.roof_corner_brandmauer_right.material}
       />
     </group>
   );
