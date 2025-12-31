@@ -9,9 +9,9 @@ import {
 } from "@react-three/drei";
 import { useAppStore } from "@/store";
 import { gridConfig, orbitControlsConfig } from "@/config/config";
-import CameraDebugger from "@/components/camera_debugger";
+import CameraDebugger from "@/components/CameraDebugger";
 import { InstancedBuilding } from "@/components/Building";
-import ShadowCatcher from "@/components/shadow_catcher";
+import ShadowCatcher from "@/components/ShadowCatcher";
 import Lights from "./lights";
 
 export default function Scene() {
