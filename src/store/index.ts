@@ -9,7 +9,7 @@ const createLogicWorker = (
     status: string;
     result: BuildingItem[];
     dimensions: { sizeX: number; sizeY: number; sizeZ: number };
-  }) => void
+  }) => void,
 ) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",

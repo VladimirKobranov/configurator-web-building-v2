@@ -26,7 +26,7 @@ onmessage = async (event) => {
   const stairsSide = payload?.stairsSide ?? 0;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}, stairsIndex ${stairsIndex}, stairsSide ${stairsSide}`
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}, stairsIndex ${stairsIndex}, stairsSide ${stairsSide}`,
   );
 
   const rawHouse = buildHouse(
@@ -43,7 +43,7 @@ onmessage = async (event) => {
     roofAccPercent,
     stairs,
     stairsIndex,
-    stairsSide
+    stairsSide,
   );
 
   // Apply spacing and centering
@@ -76,7 +76,7 @@ function generateRoof(
   heightY: number,
   baseSeed: number,
   roofAcc: boolean,
-  roofAccPercent: number
+  roofAccPercent: number,
 ) {
   const tiles = [];
   for (let x = 0; x < sizeX; x++) {
@@ -124,7 +124,7 @@ function generateWallSide(
   sideIndex: number,
   baseSeed: number,
   brandmauer: boolean,
-  stairIndex: number = -1
+  stairIndex: number = -1,
 ) {
   const arr = [];
   for (let i = 0; i < length; i++) {
@@ -214,7 +214,7 @@ function buildHouse(
   roofAccPercent: number,
   stairs: boolean,
   stairsIndex: number,
-  stairsSide: number
+  stairsSide: number,
 ) {
   const roof = generateRoof(
     sizeX,
@@ -222,7 +222,7 @@ function buildHouse(
     sizeY,
     baseSeed,
     roofAcc,
-    roofAccPercent
+    roofAccPercent,
   );
 
   // Determine stair location
@@ -244,7 +244,7 @@ function buildHouse(
     0,
     baseSeed,
     brandmauer,
-    usedStairSide === 0 ? usedStairIndex : -1
+    usedStairSide === 0 ? usedStairIndex : -1,
   );
   const south = generateWallSide(
     sizeX,
@@ -255,7 +255,7 @@ function buildHouse(
     1,
     baseSeed,
     brandmauer,
-    usedStairSide === 1 ? usedStairIndex : -1
+    usedStairSide === 1 ? usedStairIndex : -1,
   );
   const west = generateWallSide(
     sizeZ,
@@ -266,7 +266,7 @@ function buildHouse(
     2,
     baseSeed,
     brandmauer,
-    usedStairSide === 2 ? usedStairIndex : -1
+    usedStairSide === 2 ? usedStairIndex : -1,
   );
   const east = generateWallSide(
     sizeZ,
@@ -277,7 +277,7 @@ function buildHouse(
     3,
     baseSeed,
     brandmauer,
-    usedStairSide === 3 ? usedStairIndex : -1
+    usedStairSide === 3 ? usedStairIndex : -1,
   );
 
   const allWalls = [...north, ...south, ...west, ...east];
@@ -309,9 +309,12 @@ function buildHouse(
     if (isCorner) {
       // Process structural corner
       let rot = 0;
-      if (x === 0 && z === 0) rot = 0; // left top
-      else if (x === sizeX - 1 && z === 0) rot = -Math.PI / 2; // right bottom
-      else if (x === sizeX - 1 && z === sizeZ - 1) rot = Math.PI; // right top
+      if (x === 0 && z === 0)
+        rot = 0; // left top
+      else if (x === sizeX - 1 && z === 0)
+        rot = -Math.PI / 2; // right bottom
+      else if (x === sizeX - 1 && z === sizeZ - 1)
+        rot = Math.PI; // right top
       else if (x === 0 && z === sizeZ - 1) rot = Math.PI / 2; // left bottom
 
       let type = "main_floor_corner";
