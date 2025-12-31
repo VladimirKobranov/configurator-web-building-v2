@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Ui from "@/components/ui";
-import Scene from "@/components/scene";
+import Ui from "@/components/Ui";
+import Scene from "@/components/three/Scene";
 import { useAppStore } from "@/store";
 
 export default function App() {

@@ -1,8 +1,8 @@
 // store.ts
 import { create } from "zustand";
 import { cameraConfig, buildingConfig, sceneConfig } from "@/config/config";
-import { mulberry32 } from "@/etc/utils";
-import type { BuildingItem, BuildingProps, AppState } from "@/types";
+import { mulberry32 } from "@/utils/utils";
+import type { BuildingItem, BuildingProps, AppState } from "@/types/types";
 
 const createLogicWorker = (
   onMessage: (data: {

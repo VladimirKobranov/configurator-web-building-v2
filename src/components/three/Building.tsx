@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useAppStore } from "@/store";
-import type { BuildingItem, GLTFResult } from "@/types";
+import type { BuildingItem, GLTFResult } from "@/types/types";
 
 // @ts-expect-error - GLB files are not recognized by TypeScript by default
 import buildingUrl from "@/assets/building.glb";

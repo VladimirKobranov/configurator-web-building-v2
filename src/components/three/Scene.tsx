@@ -9,10 +9,10 @@ import {
 } from "@react-three/drei";
 import { useAppStore } from "@/store";
 import { gridConfig, orbitControlsConfig } from "@/config/config";
-import CameraDebugger from "@/components/CameraDebugger";
-import { InstancedBuilding } from "@/components/Building";
-import ShadowCatcher from "@/components/ShadowCatcher";
-import Lights from "./lights";
+import CameraDebugger from "@/components/three/CameraDebugger";
+import { InstancedBuilding } from "@/components/three/Building";
+import ShadowCatcher from "@/components/three/ShadowCatcher";
+import Lights from "@/components/three/Lights";
 
 export default function Scene() {
   const autoRotateSpeed = useAppStore((s) => s.autoRotateSpeed);

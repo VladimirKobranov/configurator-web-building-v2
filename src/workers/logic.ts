@@ -1,5 +1,5 @@
-import { mulberry32 } from "@/etc/utils";
-import type { BuildingItem, BuildingProps } from "@/types";
+import { mulberry32 } from "@/utils/utils";
+import type { BuildingItem, BuildingProps } from "@/types/types";
 
 onmessage = async (event) => {
   const { payload }: { payload: BuildingProps } = event.data;
