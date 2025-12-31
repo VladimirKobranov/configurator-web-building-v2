@@ -86,7 +86,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
   const stableMeshRefs = useMemo(
     () => meshRefs,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    Object.values(meshRefs),
+    Object.values(meshRefs)
   );
 
   const { selectedItem, setSelectedItem } = useAppStore();
@@ -124,7 +124,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         tempObject.position.set(
           item.position.x,
           item.position.y,
-          item.position.z,
+          item.position.z
         );
 
         tempObject.rotation.set(0, item.rotationY || 0, 0);
@@ -148,7 +148,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         roughness: 0.7,
         side: THREE.DoubleSide,
       }),
-    [],
+    []
   );
 
   const typeConfig = useMemo(() => {
@@ -179,7 +179,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
 
         return (
           <instancedMesh
-            key={type}
+            key={`${type}-${items.length}`}
             ref={stableMeshRefs[type as MeshType]}
             args={[config.geometry, material, items.length]}
             castShadow
