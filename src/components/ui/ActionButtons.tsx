@@ -8,13 +8,13 @@ export function ActionButtons() {
   return (
     <div className="flex gap-2">
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex-grow"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded grow"
         onClick={() => sendWorkerMessage(buildingProps)}
       >
         Build
       </button>
       <button
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded grow"
         onClick={() => {
           resetBuildingProps();
           sendWorkerMessage(buildingConfig);
