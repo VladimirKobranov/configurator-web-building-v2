@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Ui from "@/components/ui";
+import Ui from "@/components/Ui";
 import Scene from "@/components/three/Scene";
 import { useAppStore } from "@/store";
 

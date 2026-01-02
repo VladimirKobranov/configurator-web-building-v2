@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { useRef, useEffect, useMemo } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useAppStore } from "@/store";
 import type { BuildingItem, GLTFResult } from "@/types/types";
 
 // @ts-expect-error - GLB files are not recognized by TypeScript by default
 import buildingUrl from "@/assets/building.glb";
+import mapUrl from "@/assets/map.jpg";
 
 const tempObject = new THREE.Object3D();
 
@@ -91,7 +92,30 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
 
   const { selectedItem, setSelectedItem } = useAppStore();
 
-  const { nodes } = useGLTF(buildingUrl) as unknown as GLTFResult;
+  const { nodes, materials } = useGLTF(buildingUrl) as unknown as GLTFResult;
+
+  const texture = useTexture(mapUrl);
+
+  const material = useMemo(() => {
+    if (texture) {
+      texture.flipY = false;
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = 16;
+      texture.needsUpdate = true;
+    }
+
+    const baseMaterial = materials.Material as THREE.MeshStandardMaterial;
+
+    const m = baseMaterial
+      ? baseMaterial.clone()
+      : new THREE.MeshStandardMaterial();
+    m.map = texture;
+    m.color.set("#ffffff");
+    m.side = THREE.DoubleSide;
+    m.needsUpdate = true;
+
+    return m;
+  }, [texture, materials]);
 
   const groupedData = useMemo(() => {
     const groups: Record<string, BuildingItem[]> = {};
@@ -106,7 +130,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     return groups;
   }, [data]);
 
-  const defaultColor = useMemo(() => new THREE.Color("#888888"), []);
+  const defaultColor = useMemo(() => new THREE.Color("#ffffff"), []);
   const highlightColor = useMemo(() => new THREE.Color("#5f6a82"), []);
 
   useEffect(() => {
@@ -140,16 +164,6 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     });
   }, [groupedData, stableMeshRefs, selectedItem, defaultColor, highlightColor]);
-
-  const material = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#ffffff", // Use white so instance colors show through accurately
-        roughness: 0.7,
-        side: THREE.DoubleSide,
-      }),
-    []
-  );
 
   const typeConfig = useMemo(() => {
     const config: Record<string, { geometry: THREE.BufferGeometry }> = {};
