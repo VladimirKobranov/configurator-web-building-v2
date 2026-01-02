@@ -3,6 +3,7 @@ import { useRef, useEffect, useMemo } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { useAppStore } from "@/store";
 import type { BuildingItem, GLTFResult } from "@/types/types";
+import { patchBuildingMaterial } from "@/shaders/buildingShader";
 
 // @ts-expect-error - GLB files are not recognized by TypeScript by default
 import buildingUrl from "@/assets/building.glb";
@@ -112,6 +113,9 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     m.map = texture;
     m.color.set("#ffffff");
     m.side = THREE.DoubleSide;
+
+    m.onBeforeCompile = patchBuildingMaterial;
+
     m.needsUpdate = true;
 
     return m;
@@ -130,8 +134,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     return groups;
   }, [data]);
 
-  const defaultColor = useMemo(() => new THREE.Color("#ffffff"), []);
-  const highlightColor = useMemo(() => new THREE.Color("#5f6a82"), []);
+  const whiteColor = useMemo(() => new THREE.Color("#ffffff"), []);
 
   useEffect(() => {
     Object.entries(stableMeshRefs).forEach(([type, ref]) => {
@@ -142,6 +145,17 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
       if (!mesh.instanceColor) {
         const colorArray = new Float32Array(items.length * 3);
         mesh.instanceColor = new THREE.InstancedBufferAttribute(colorArray, 3);
+      }
+
+      let selectedAttr = mesh.geometry.getAttribute(
+        "instanceSelected"
+      ) as THREE.InstancedBufferAttribute;
+      if (!selectedAttr) {
+        selectedAttr = new THREE.InstancedBufferAttribute(
+          new Float32Array(items.length),
+          1
+        );
+        mesh.geometry.setAttribute("instanceSelected", selectedAttr);
       }
 
       items.forEach((item, i) => {
@@ -158,19 +172,43 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         // Handle highlighting
         const isSelected =
           selectedItem?.type === type && selectedItem?.instanceId === i;
-        mesh.setColorAt(i, isSelected ? highlightColor : defaultColor);
+        mesh.setColorAt(i, whiteColor);
+
+        selectedAttr.setX(i, isSelected ? 1.0 : 0.0);
       });
       mesh.instanceMatrix.needsUpdate = true;
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      selectedAttr.needsUpdate = true;
     });
-  }, [groupedData, stableMeshRefs, selectedItem, defaultColor, highlightColor]);
+  }, [groupedData, stableMeshRefs, selectedItem, whiteColor]);
 
   const typeConfig = useMemo(() => {
     const config: Record<string, { geometry: THREE.BufferGeometry }> = {};
     MESH_KEYS.forEach((type) => {
       if (nodes[type]) {
+        let geometry = nodes[type].geometry.clone();
+
+        // Convert to non-indexed to use barycentric coordinates correctly per triangle
+        if (geometry.index) {
+          geometry = geometry.toNonIndexed();
+        }
+
+        const count = geometry.attributes.position.count;
+        const barycentric = new Float32Array(count * 3);
+
+        for (let i = 0; i < count; i += 3) {
+          barycentric.set([1, 0, 0], i * 3);
+          barycentric.set([0, 1, 0], (i + 1) * 3);
+          barycentric.set([0, 0, 1], (i + 2) * 3);
+        }
+
+        geometry.setAttribute(
+          "barycentric",
+          new THREE.BufferAttribute(barycentric, 3)
+        );
+
         config[type] = {
-          geometry: nodes[type].geometry,
+          geometry: geometry,
         };
       }
     });

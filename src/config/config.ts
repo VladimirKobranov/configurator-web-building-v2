@@ -53,3 +53,8 @@ export const buildingConfig = {
   stairsSide: 1,
   randomSeed: 52221,
 };
+
+export const selectionConfig = {
+  wirelineColor: "#ffffff",
+  wirelineThickness: 4,
+};
