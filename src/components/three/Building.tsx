@@ -150,7 +150,8 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
       let selectedAttr = mesh.geometry.getAttribute(
         "instanceSelected"
       ) as THREE.InstancedBufferAttribute;
-      if (!selectedAttr) {
+
+      if (!selectedAttr || selectedAttr.count !== items.length) {
         selectedAttr = new THREE.InstancedBufferAttribute(
           new Float32Array(items.length),
           1
@@ -249,6 +250,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
             args={[config.geometry, material, items.length]}
             castShadow
             receiveShadow
+            frustumCulled={false}
             onClick={(e) => {
               e.stopPropagation();
               if (e.instanceId !== undefined) {
