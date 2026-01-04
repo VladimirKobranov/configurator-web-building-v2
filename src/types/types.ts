@@ -38,6 +38,7 @@ export interface SceneProps {
   showGrid: boolean;
   showHelpers: boolean;
   autoUpdate: boolean;
+  showInfoPanel: boolean;
 }
 
 export interface GeometryStats {

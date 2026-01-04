@@ -91,7 +91,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
     Object.values(meshRefs)
   );
 
-  const { selectedItem, setSelectedItem } = useAppStore();
+  const { selectedItem, setSelectedItem, sceneProps } = useAppStore();
 
   const { nodes, materials } = useGLTF(buildingUrl) as unknown as GLTFResult;
 
@@ -253,6 +253,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
             frustumCulled={false}
             onClick={(e) => {
               e.stopPropagation();
+              if (!sceneProps.showInfoPanel) return;
               if (e.instanceId !== undefined) {
                 handleClick(type, e.instanceId);
               }

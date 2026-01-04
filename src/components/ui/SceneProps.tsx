@@ -27,7 +27,7 @@ export function SceneProps() {
         </label>
       </div>
 
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-2 flex items-center gap-2">
         <input
           type="checkbox"
           id="autoUpdate"
@@ -36,6 +36,18 @@ export function SceneProps() {
         />
         <label htmlFor="autoUpdate" className="cursor-pointer">
           Auto Update
+        </label>
+      </div>
+
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="showInfoPanel"
+          checked={sceneProps.showInfoPanel}
+          onChange={(e) => setSceneProps({ showInfoPanel: e.target.checked })}
+        />
+        <label htmlFor="showInfoPanel" className="cursor-pointer">
+          Show Info Panel
         </label>
       </div>
     </div>

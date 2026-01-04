@@ -134,10 +134,20 @@ export const useAppStore = create<AppState>()((set, get) => ({
 
   // scene functions
   setSceneProps: (props) =>
-    set((state) => ({
-      sceneProps: {
+    set((state) => {
+      const updatedSceneProps = {
         ...state.sceneProps,
         ...props,
-      },
-    })),
+      };
+
+      const newState: Partial<AppState> = {
+        sceneProps: updatedSceneProps,
+      };
+
+      if (props.showInfoPanel === false) {
+        newState.selectedItem = null;
+      }
+
+      return newState;
+    }),
 }));
