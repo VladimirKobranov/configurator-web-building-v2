@@ -37,6 +37,7 @@ export interface BuildingProps {
 export interface SceneProps {
   showGrid: boolean;
   showHelpers: boolean;
+  autoUpdate: boolean;
 }
 
 export interface GeometryStats {
@@ -52,7 +53,6 @@ export interface AppState {
   buildingProps?: BuildingProps;
   building: BuildingItem[];
   isScattered: boolean;
-  autoUpdate: boolean;
   sceneProps: SceneProps;
 
   // selection
@@ -73,7 +73,6 @@ export interface AppState {
 
   // actions
   // camera props
-  setAutoUpdate: (autoUpdate: boolean) => void;
   setAutoRotateSpeed: (speed: number) => void;
   setCamProps: (props: Partial<CameraProps>) => void;
 

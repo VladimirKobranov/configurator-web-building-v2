@@ -9,7 +9,7 @@ const createLogicWorker = (
     status: string;
     result: BuildingItem[];
     dimensions: { sizeX: number; sizeY: number; sizeZ: number };
-  }) => void,
+  }) => void
 ) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",
@@ -39,7 +39,6 @@ export const useAppStore = create<AppState>()((set, get) => ({
 
   // scene props
   sceneProps: sceneConfig,
-  autoUpdate: true,
 
   // building props
   isScattered: false,
@@ -73,7 +72,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     });
 
     const state = get();
-    if (state.autoUpdate) {
+    if (state.sceneProps.autoUpdate) {
       state.sendWorkerMessage(state.buildingProps);
     }
   },
@@ -87,8 +86,6 @@ export const useAppStore = create<AppState>()((set, get) => ({
   },
   resetBuildingProps: () =>
     set({ buildingProps: buildingConfig, selectedItem: null }),
-
-  setAutoUpdate: (autoUpdate) => set({ autoUpdate }),
 
   setBuilding: (building) => set({ building }),
 

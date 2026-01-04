@@ -1,8 +1,7 @@
 import { useAppStore } from "@/store";
 
 export function SceneProps() {
-  const { sceneProps, setSceneProps, autoUpdate, setAutoUpdate } =
-    useAppStore();
+  const { sceneProps, setSceneProps } = useAppStore();
 
   return (
     <div className="mb-4">
@@ -32,8 +31,8 @@ export function SceneProps() {
         <input
           type="checkbox"
           id="autoUpdate"
-          checked={autoUpdate}
-          onChange={(e) => setAutoUpdate(e.target.checked)}
+          checked={sceneProps.autoUpdate}
+          onChange={(e) => setSceneProps({ autoUpdate: e.target.checked })}
         />
         <label htmlFor="autoUpdate" className="cursor-pointer">
           Auto Update
