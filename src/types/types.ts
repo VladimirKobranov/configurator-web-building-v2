@@ -18,8 +18,14 @@ export interface CameraProps {
 
 export interface BuildingProps {
   sizeX: number;
+  sizeXMin: number;
+  sizeXMax: number;
   sizeY: number;
+  sizeYMin: number;
+  sizeYMax: number;
   sizeZ: number;
+  sizeZMin: number;
+  sizeZMax: number;
   offset: number;
   aircond: boolean;
   aircondPercent: number;

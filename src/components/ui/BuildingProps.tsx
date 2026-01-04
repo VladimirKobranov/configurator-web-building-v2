@@ -11,8 +11,8 @@ export function BuildingProps() {
         <li>
           <input
             type="range"
-            min={1}
-            max={10}
+            min={buildingProps?.sizeXMin}
+            max={buildingProps?.sizeXMax}
             step={1}
             value={buildingProps?.sizeX || 0}
             onChange={(e) => setBuildingProps({ sizeX: +e.target.value })}
@@ -22,8 +22,8 @@ export function BuildingProps() {
         <li>
           <input
             type="range"
-            min={1}
-            max={10}
+            min={buildingProps?.sizeYMin}
+            max={buildingProps?.sizeYMax}
             step={1}
             value={buildingProps?.sizeY || 0}
             onChange={(e) => setBuildingProps({ sizeY: +e.target.value })}
@@ -33,8 +33,8 @@ export function BuildingProps() {
         <li>
           <input
             type="range"
-            min={1}
-            max={10}
+            min={buildingProps?.sizeZMin}
+            max={buildingProps?.sizeZMax}
             step={1}
             value={buildingProps?.sizeZ || 0}
             onChange={(e) => setBuildingProps({ sizeZ: +e.target.value })}

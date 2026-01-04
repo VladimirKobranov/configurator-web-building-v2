@@ -40,8 +40,14 @@ export const sceneConfig = {
 
 export const buildingConfig = {
   sizeX: 6,
+  sizeXMin: 2,
+  sizeXMax: 20,
   sizeY: 5,
+  sizeYMin: 2,
+  sizeYMax: 20,
   sizeZ: 5,
+  sizeZMin: 2,
+  sizeZMax: 20,
   offset: 0.0,
   aircond: true,
   aircondPercent: 20,
