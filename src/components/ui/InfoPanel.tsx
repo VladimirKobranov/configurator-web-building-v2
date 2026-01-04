@@ -6,7 +6,7 @@ export function InfoPanel() {
   if (!selectedItem) return null;
 
   return (
-    <div className="z-100 text-white fixed top-10 right-10">
+    <div className="z-100 text-white fixed top-10 right-10 w-80">
       <div>
         <h2 className="text-lg font-bold">Element Info:</h2>
         <ul>

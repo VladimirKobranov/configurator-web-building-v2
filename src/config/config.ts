@@ -35,7 +35,7 @@ export const sceneConfig = {
   showGrid: true,
   showHelpers: false,
   autoUpdate: true,
-  showInfoPanel: true,
+  showInfoPanel: false,
 };
 
 export const buildingConfig = {

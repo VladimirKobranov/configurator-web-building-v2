@@ -7,7 +7,7 @@ import { InfoPanel } from "./ui/InfoPanel";
 export default function Ui() {
   return (
     <>
-      <div className="z-100 text-white fixed top-10 left-10">
+      <div className="z-100 text-white fixed top-10 left-10 w-80">
         <CameraProps />
         <BuildingProps />
         <SceneProps />
