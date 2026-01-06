@@ -88,7 +88,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
   const stableMeshRefs = useMemo(
     () => meshRefs,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    Object.values(meshRefs)
+    Object.values(meshRefs),
   );
 
   const { selectedItem, setSelectedItem, sceneProps } = useAppStore();
@@ -148,13 +148,13 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
       }
 
       let selectedAttr = mesh.geometry.getAttribute(
-        "instanceSelected"
+        "instanceSelected",
       ) as THREE.InstancedBufferAttribute;
 
       if (!selectedAttr || selectedAttr.count !== items.length) {
         selectedAttr = new THREE.InstancedBufferAttribute(
           new Float32Array(items.length),
-          1
+          1,
         );
         mesh.geometry.setAttribute("instanceSelected", selectedAttr);
       }
@@ -163,7 +163,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
         tempObject.position.set(
           item.position.x,
           item.position.y,
-          item.position.z
+          item.position.z,
         );
 
         tempObject.rotation.set(0, item.rotationY || 0, 0);
@@ -205,7 +205,7 @@ export function InstancedBuilding({ data }: { data: BuildingItem[] }) {
 
         geometry.setAttribute(
           "barycentric",
-          new THREE.BufferAttribute(barycentric, 3)
+          new THREE.BufferAttribute(barycentric, 3),
         );
 
         config[type] = {

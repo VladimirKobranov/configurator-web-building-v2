@@ -75,7 +75,7 @@ export interface AppState {
       type: string;
       instanceId: number;
       geometryStats?: GeometryStats;
-    } | null
+    } | null,
   ) => void;
 
   // actions

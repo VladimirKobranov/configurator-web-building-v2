@@ -52,7 +52,7 @@ export const patchBuildingMaterial = (shader: any) => {
     ${shader.vertexShader}
   `.replace(
     "#include <begin_vertex>",
-    `#include <begin_vertex>\n${buildingShader.vertexShader.main}`
+    `#include <begin_vertex>\n${buildingShader.vertexShader.main}`,
   );
 
   shader.fragmentShader = `
@@ -60,6 +60,6 @@ export const patchBuildingMaterial = (shader: any) => {
     ${shader.fragmentShader}
   `.replace(
     "#include <opaque_fragment>",
-    `#include <opaque_fragment>\n${buildingShader.fragmentShader.main}`
+    `#include <opaque_fragment>\n${buildingShader.fragmentShader.main}`,
   );
 };
