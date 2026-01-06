@@ -120,7 +120,7 @@ export function BuildingProps() {
                 <input
                   type="range"
                   min={0}
-                  max={3}
+                  max={buildingProps.brandmauer ? 1 : 3}
                   step={1}
                   value={buildingProps.stairsSide}
                   onChange={(e) =>
