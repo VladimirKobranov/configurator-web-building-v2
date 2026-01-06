@@ -3,6 +3,7 @@ import Ui from "@/components/ui";
 import Scene from "@/components/three/Scene";
 import { useAppStore } from "@/store";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
+import Author from "@/components/author";
 
 export default function App() {
   const initWorker = useAppStore((s) => s.initWorker);
@@ -29,6 +30,7 @@ export default function App() {
       {isLoading && <LoadingOverlay message="Initializing scene" />}
       <Scene />
       <Ui />
+      <Author />
     </div>
   );
 }
