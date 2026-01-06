@@ -6,7 +6,7 @@ export function useKeyboard() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const isHotkey = hotkeysConfig.some(
-        (h) => h.key.toLowerCase() === event.key.toLowerCase()
+        (h) => h.key.toLowerCase() === event.key.toLowerCase(),
       );
 
       if (isHotkey) {

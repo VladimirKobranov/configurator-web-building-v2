@@ -3,8 +3,9 @@ import Ui from "@/components/ui";
 import Scene from "@/components/three/Scene";
 import { useAppStore } from "@/store";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
-import Author from "@/components/author";
 import { useKeyboard } from "@/hooks/useKeyboard";
+import Author from "@/components/ui/Author";
+import Title from "@/components/ui/Title";
 
 export default function App() {
   useKeyboard();
@@ -34,6 +35,7 @@ export default function App() {
       <Scene />
       <Ui />
       <Author />
+      <Title />
     </div>
   );
 }
