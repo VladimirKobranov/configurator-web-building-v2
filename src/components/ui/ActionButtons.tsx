@@ -2,26 +2,60 @@ import { useAppStore } from "@/store";
 import { buildingConfig } from "@/config/config";
 
 export function ActionButtons() {
-  const { sendWorkerMessage, buildingProps, resetBuildingProps } =
-    useAppStore();
+  const {
+    buildingProps,
+    setBuildingProps,
+    randomizeSeed,
+    sendWorkerMessage,
+    resetBuildingProps,
+  } = useAppStore();
+
+  if (!buildingProps) return null;
 
   return (
-    <div className="flex gap-2">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded grow"
-        onClick={() => sendWorkerMessage(buildingProps)}
-      >
-        Build
-      </button>
-      <button
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded grow"
-        onClick={() => {
-          resetBuildingProps();
-          sendWorkerMessage(buildingConfig);
-        }}
-      >
-        Reset
-      </button>
+    <div className="px-3 py-3 border-b border-[#333]">
+      <div className="flex flex-col gap-3">
+        {/* Seed Input */}
+        <div className="flex items-center gap-2">
+          <span className="ui-label text-[11px]">Seed:</span>
+          <input
+            type="number"
+            className="grow bg-[#1a1a1a] border border-[#333] text-[11px] px-2 py-1 outline-none text-gray-300"
+            value={buildingProps.randomSeed}
+            onChange={(e) => {
+              const val = e.target.value.slice(0, 5);
+              setBuildingProps({ randomSeed: +val });
+            }}
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-col gap-2">
+          <button
+            className="w-full bg-[#2d3748] hover:bg-[#3b4a64] border border-[#4a5568] text-[11px] font-bold py-1.5 uppercase transition-colors"
+            onClick={() => sendWorkerMessage(buildingProps)}
+          >
+            Build
+          </button>
+          <div className="flex gap-2">
+            <button
+              className="flex-1 bg-transparent hover:bg-[#222] border border-[#333] text-[11px] font-bold py-1.5 uppercase transition-colors text-gray-400 hover:text-white"
+              onClick={randomizeSeed}
+            >
+              Randomize
+            </button>
+            <button
+              className="flex-1 bg-transparent hover:bg-[#222] border border-[#333] text-[11px] font-bold py-1.5 uppercase transition-colors text-gray-400 hover:text-white"
+              onClick={() => {
+                resetBuildingProps();
+                sendWorkerMessage(buildingConfig);
+              }}
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
