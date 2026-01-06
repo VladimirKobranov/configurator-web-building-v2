@@ -88,61 +88,73 @@ export function BuildingProps() {
 
         {/* Stairs */}
         <div className="px-3 py-1 flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="stairs"
-              checked={buildingProps.stairs}
-              onChange={(e) => setBuildingProps({ stairs: e.target.checked })}
-            />
-            <label
-              htmlFor="stairs"
-              className="ui-label text-[12px] cursor-pointer"
-            >
-              Stairs
-            </label>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="stairs"
+                checked={buildingProps.stairs}
+                onChange={(e) => setBuildingProps({ stairs: e.target.checked })}
+              />
+              <label
+                htmlFor="stairs"
+                className="ui-label text-[12px] cursor-pointer"
+              >
+                Stairs
+              </label>
+            </div>
+            <span className="text-[10px] text-gray-500 font-bold uppercase">
+              {buildingProps.stairs ? "ON" : "OFF"}
+            </span>
           </div>
           {buildingProps.stairs && (
-            <div className="pl-6 flex flex-col gap-1">
-              <input
-                type="range"
-                min={0}
-                max={3}
-                step={1}
-                value={buildingProps.stairsSide}
-                onChange={(e) =>
-                  setBuildingProps({ stairsSide: +e.target.value })
-                }
-                className="h-1 mb-1"
-              />
-              <div className="flex items-center gap-2">
+            <div className="pl-6 flex flex-col gap-2 pt-1">
+              {/* Stairs Side */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="ui-label text-[11px]">Side</span>
+                  <span className="bg-[#222] border border-[#444] px-1 min-w-[20px] text-center text-[10px]">
+                    {buildingProps.stairsSide}
+                  </span>
+                </div>
                 <input
-                  type="checkbox"
-                  id="stairs_side_check"
-                  checked={true}
-                  readOnly
+                  type="range"
+                  min={0}
+                  max={3}
+                  step={1}
+                  value={buildingProps.stairsSide}
+                  onChange={(e) =>
+                    setBuildingProps({ stairsSide: +e.target.value })
+                  }
+                  className="h-1"
                 />
-                <label className="ui-label text-[11px]">stairs side</label>
-                <span className="ml-auto text-[11px] text-gray-400">
-                  {buildingProps.stairsSide}
-                </span>
               </div>
-              <input
-                type="range"
-                min={1}
-                max={Math.max(
-                  1,
-                  (buildingProps.stairsSide < 2
-                    ? buildingProps.sizeX
-                    : buildingProps.sizeZ) - 2,
-                )}
-                step={1}
-                value={buildingProps.stairsIndex}
-                onChange={(e) =>
-                  setBuildingProps({ stairsIndex: +e.target.value })
-                }
-                className="h-1"
-              />
+
+              {/* Stairs Position */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="ui-label text-[11px]">Position</span>
+                  <span className="bg-[#222] border border-[#444] px-1 min-w-[20px] text-center text-[10px]">
+                    {buildingProps.stairsIndex}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={Math.max(
+                    1,
+                    (buildingProps.stairsSide < 2
+                      ? buildingProps.sizeX
+                      : buildingProps.sizeZ) - 2
+                  )}
+                  step={1}
+                  value={buildingProps.stairsIndex}
+                  onChange={(e) =>
+                    setBuildingProps({ stairsIndex: +e.target.value })
+                  }
+                  className="h-1"
+                />
+              </div>
             </div>
           )}
         </div>

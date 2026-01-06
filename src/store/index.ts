@@ -84,12 +84,30 @@ export const useAppStore = create<AppState>()((set, get) => ({
 
     const randomInRange = (min: number, max: number) =>
       Math.floor(rand() * (max - min + 1)) + min;
+    const randomBool = () => rand() > 0.5;
+
+    const newSizeX = randomInRange(props.sizeXMin, props.sizeXMax);
+    const newSizeY = randomInRange(props.sizeYMin, props.sizeYMax);
+    const newSizeZ = randomInRange(props.sizeZMin, props.sizeZMax);
+    const newStairsSide = randomInRange(0, 3);
+    const sideLimit = newStairsSide < 2 ? newSizeX : newSizeZ;
+    const newStairsIndex = randomInRange(1, Math.max(1, sideLimit - 2));
 
     get().setBuildingProps({
       randomSeed: Math.floor(rand() * 99999),
-      sizeX: randomInRange(props.sizeXMin, props.sizeXMax),
-      sizeY: randomInRange(props.sizeYMin, props.sizeYMax),
-      sizeZ: randomInRange(props.sizeZMin, props.sizeZMax),
+      sizeX: newSizeX,
+      sizeY: newSizeY,
+      sizeZ: newSizeZ,
+      aircond: randomBool(),
+      aircondPercent: randomInRange(0, 100),
+      firstFloorAcc: randomBool(),
+      firstFloorAccPercent: randomInRange(0, 100),
+      roofAcc: randomBool(),
+      roofAccPercent: randomInRange(0, 100),
+      brandmauer: randomBool(),
+      stairs: randomBool(),
+      stairsSide: newStairsSide,
+      stairsIndex: newStairsIndex,
     });
   },
   resetBuildingProps: () =>
