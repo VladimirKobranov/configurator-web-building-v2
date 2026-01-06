@@ -9,7 +9,7 @@ const createLogicWorker = (
     status: string;
     result: BuildingItem[];
     dimensions: { sizeX: number; sizeY: number; sizeZ: number };
-  }) => void,
+  }) => void
 ) => {
   const worker = new Worker(new URL("@/workers/logic.ts", import.meta.url), {
     type: "module",
@@ -80,8 +80,16 @@ export const useAppStore = create<AppState>()((set, get) => ({
   // building functions
   randomizeSeed: () => {
     const rand = mulberry32(Date.now());
+    const props = get().buildingProps || buildingConfig;
+
+    const randomInRange = (min: number, max: number) =>
+      Math.floor(rand() * (max - min + 1)) + min;
+
     get().setBuildingProps({
-      randomSeed: Math.floor(rand() * 99999), // five digits
+      randomSeed: Math.floor(rand() * 99999),
+      sizeX: randomInRange(props.sizeXMin, props.sizeXMax),
+      sizeY: randomInRange(props.sizeYMin, props.sizeYMax),
+      sizeZ: randomInRange(props.sizeZMin, props.sizeZMax),
     });
   },
   resetBuildingProps: () =>
