@@ -8,7 +8,7 @@ import { HotkeysOverlay } from "./ui/HotkeysOverlay";
 export default function Ui() {
   return (
     <>
-      <div className="z-100 text-white fixed top-6 left-6 w-80 ui-panel flex flex-col pointer-events-auto">
+      <div className="z-100 text-white fixed top-6 left-6 w-80 ui-panel flex flex-col pointer-events-auto max-h-[calc(100dvh-48px)] overflow-y-auto">
         <CameraProps />
         <BuildingProps />
         <SceneProps />
