@@ -123,7 +123,13 @@ export const useAppStore = create<AppState>()((set, get) => ({
     });
   },
   resetBuildingProps: () =>
-    set({ buildingProps: buildingConfig, selectedItem: null }),
+    set({
+      buildingProps: buildingConfig,
+      sceneProps: sceneConfig,
+      camProps: cameraConfig,
+      autoRotateSpeed: 0,
+      selectedItem: null,
+    }),
 
   setBuilding: (building) => set({ building }),
 
