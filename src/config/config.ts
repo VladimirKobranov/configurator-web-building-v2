@@ -66,3 +66,11 @@ export const selectionConfig = {
   wirelineColor: "#ffffff",
   wirelineThickness: 4,
 };
+
+export const hotkeysConfig = [
+  { key: "G", label: "Show Grid" },
+  { key: "H", label: "Show Helpers" },
+  { key: "U", label: "Auto Updates" },
+  { key: "I", label: "Show Info Panel" },
+  { key: "R", label: "Randomize" },
+];

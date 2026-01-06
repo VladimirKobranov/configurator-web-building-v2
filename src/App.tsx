@@ -4,9 +4,12 @@ import Scene from "@/components/three/Scene";
 import { useAppStore } from "@/store";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import Author from "@/components/author";
+import { useKeyboard } from "@/hooks/useKeyboard";
 
 export default function App() {
+  useKeyboard();
   const initWorker = useAppStore((s) => s.initWorker);
+
   const cleanupWorker = useAppStore((s) => s.cleanupWorker);
   const sendWorkerMessage = useAppStore((s) => s.sendWorkerMessage);
 

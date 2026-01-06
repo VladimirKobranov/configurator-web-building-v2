@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { buildingConfig } from "@/config/config";
+import { buildingConfig, hotkeysConfig } from "@/config/config";
 
 export function ActionButtons() {
   const {
@@ -9,6 +9,9 @@ export function ActionButtons() {
     sendWorkerMessage,
     resetBuildingProps,
   } = useAppStore();
+
+  const getHotkey = (label: string) =>
+    hotkeysConfig.find((h) => h.label === label)?.key;
 
   if (!buildingProps) return null;
 
@@ -43,7 +46,11 @@ export function ActionButtons() {
               onClick={randomizeSeed}
             >
               Randomize
+              <span className="ml-2 text-[9px] opacity-40">
+                [{getHotkey("Randomize")}]
+              </span>
             </button>
+
             <button
               className="flex-1 bg-transparent hover:bg-[#222] border border-[#333] text-[11px] font-bold py-1.5 uppercase transition-colors text-gray-400 hover:text-white"
               onClick={() => {

@@ -1,9 +1,7 @@
+import { hotkeysConfig } from "@/config/config";
+
 export function HotkeysOverlay() {
-  const hotkeys = [
-    { key: "G", label: "Grid" },
-    { key: "H", label: "Helpers" },
-    { key: "R", label: "Randomize" },
-  ];
+  const hotkeys = hotkeysConfig;
 
   return (
     <div className="fixed bottom-6 right-6 text-white pointer-events-none flex flex-col items-end">

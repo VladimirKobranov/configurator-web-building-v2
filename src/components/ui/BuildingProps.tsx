@@ -145,7 +145,7 @@ export function BuildingProps() {
                     1,
                     (buildingProps.stairsSide < 2
                       ? buildingProps.sizeX
-                      : buildingProps.sizeZ) - 2
+                      : buildingProps.sizeZ) - 2,
                   )}
                   step={1}
                   value={buildingProps.stairsIndex}
