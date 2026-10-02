@@ -5,6 +5,16 @@ import { useAppStore } from "@/store";
 export function useKeyboard() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      if (
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        (target instanceof HTMLElement &&
+          (target.matches("input, textarea, select") || target.isContentEditable))
+      )
+        return;
+
       const isHotkey = hotkeysConfig.some(
         (h) => h.key.toLowerCase() === event.key.toLowerCase(),
       );

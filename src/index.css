@@ -157,7 +157,13 @@
   bottom: 18px;
   left: 18px;
   width: 328px;
+}
+.editor-content {
+  min-height: 0;
+  flex: 1;
   overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: #d4d4d4 transparent;
 }
@@ -240,6 +246,7 @@
   display: grid;
   gap: 10px;
   padding: 16px;
+  border-top: 1px solid var(--border);
 }
 .editor-actions-row {
   display: grid;

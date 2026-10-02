@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { version } from "../../package.json";
 
 const hotkey = (label: string) =>
   hotkeysConfig.find((item) => item.label === label)?.key;
@@ -123,196 +124,215 @@ function ConfigurationPanel() {
         <CardTitle className="text-base">Building configuration</CardTitle>
       </CardHeader>
 
-      <Section title="Camera">
-        <div className="editor-readout">
-          <span>Position</span>
-          <code>[{camProps.position.map((n) => n.toFixed(1)).join(", ")}]</code>
-        </div>
-        <div className="editor-readout">
-          <span>Rotation</span>
-          <code>[{camProps.rotation.map((n) => n.toFixed(1)).join(", ")}]</code>
-        </div>
-        <div className="editor-readout">
-          <span>Target</span>
-          <code>[{camProps.target.map((n) => n.toFixed(1)).join(", ")}]</code>
-        </div>
-        <Control
-          label="Field of view"
-          value={camProps.fov}
-          min={20}
-          max={120}
-          display={camProps.fov.toFixed(0) + "°"}
-          onChange={(fov) => setCamProps({ fov })}
-        />
-        <Control
-          label="Auto rotate"
-          value={autoRotateSpeed}
-          min={0}
-          max={5}
-          step={0.1}
-          display={autoRotateSpeed.toFixed(1)}
-          onChange={setAutoRotateSpeed}
-        />
-      </Section>
+      <div className="editor-content">
+        <Section title="Camera">
+          <div className="editor-readout">
+            <span>Position</span>
+            <code>
+              [{camProps.position.map((n) => n.toFixed(1)).join(", ")}]
+            </code>
+          </div>
+          <div className="editor-readout">
+            <span>Rotation</span>
+            <code>
+              [{camProps.rotation.map((n) => n.toFixed(1)).join(", ")}]
+            </code>
+          </div>
+          <div className="editor-readout">
+            <span>Target</span>
+            <code>[{camProps.target.map((n) => n.toFixed(1)).join(", ")}]</code>
+          </div>
+          <Control
+            label="Field of view"
+            value={camProps.fov}
+            min={20}
+            max={120}
+            display={camProps.fov.toFixed(0) + "°"}
+            onChange={(fov) => setCamProps({ fov })}
+          />
+          <Control
+            label="Auto rotate"
+            value={autoRotateSpeed}
+            min={0}
+            max={5}
+            step={0.1}
+            display={autoRotateSpeed.toFixed(1)}
+            onChange={setAutoRotateSpeed}
+          />
+        </Section>
 
-      <Section title="Building">
-        <Control
-          label="Width"
-          value={buildingProps.sizeX}
-          min={buildingProps.sizeXMin}
-          max={buildingProps.sizeXMax}
-          onChange={(sizeX) => setBuildingProps({ sizeX })}
-        />
-        <Control
-          label="Floors"
-          value={buildingProps.sizeY}
-          min={buildingProps.sizeYMin}
-          max={buildingProps.sizeYMax}
-          onChange={(sizeY) => setBuildingProps({ sizeY })}
-        />
-        <Control
-          label="Depth"
-          value={buildingProps.sizeZ}
-          min={buildingProps.sizeZMin}
-          max={buildingProps.sizeZMax}
-          onChange={(sizeZ) => setBuildingProps({ sizeZ })}
-        />
-        <Control
-          label="Offset"
-          value={buildingProps.offset}
-          min={0}
-          max={1}
-          step={0.1}
-          display={buildingProps.offset.toFixed(1)}
-          onChange={(offset) => setBuildingProps({ offset })}
-        />
-        <Separator />
-        <Option
-          id="stairs"
-          label="Stairs"
-          checked={buildingProps.stairs}
-          onChange={(stairs) => setBuildingProps({ stairs })}
-        >
+        <Section title="Building">
           <Control
-            label="Side"
-            value={buildingProps.stairsSide}
+            label="Width"
+            value={buildingProps.sizeX}
+            min={buildingProps.sizeXMin}
+            max={buildingProps.sizeXMax}
+            onChange={(sizeX) => setBuildingProps({ sizeX })}
+          />
+          <Control
+            label="Floors"
+            value={buildingProps.sizeY}
+            min={buildingProps.sizeYMin}
+            max={buildingProps.sizeYMax}
+            onChange={(sizeY) => setBuildingProps({ sizeY })}
+          />
+          <Control
+            label="Depth"
+            value={buildingProps.sizeZ}
+            min={buildingProps.sizeZMin}
+            max={buildingProps.sizeZMax}
+            onChange={(sizeZ) => setBuildingProps({ sizeZ })}
+          />
+          <Control
+            label="Offset"
+            value={buildingProps.offset}
             min={0}
-            max={buildingProps.firewall ? 1 : 3}
-            onChange={(stairsSide) => setBuildingProps({ stairsSide })}
+            max={1}
+            step={0.1}
+            display={buildingProps.offset.toFixed(1)}
+            onChange={(offset) => setBuildingProps({ offset })}
           />
-          <Control
-            label="Position"
-            value={buildingProps.stairsIndex}
-            min={1}
-            max={Math.max(
-              1,
-              (buildingProps.stairsSide < 2
-                ? buildingProps.sizeX
-                : buildingProps.sizeZ) - 2,
-            )}
-            onChange={(stairsIndex) => setBuildingProps({ stairsIndex })}
+          <Separator />
+          <Option
+            id="stairs"
+            label="Stairs"
+            checked={buildingProps.stairs}
+            onChange={(stairs) => setBuildingProps({ stairs })}
+          >
+            <Control
+              label="Side"
+              value={buildingProps.stairsSide}
+              min={0}
+              max={buildingProps.firewall ? 1 : 3}
+              onChange={(stairsSide) => setBuildingProps({ stairsSide })}
+            />
+            <Control
+              label="Position"
+              value={buildingProps.stairsIndex}
+              min={1}
+              max={Math.max(
+                1,
+                (buildingProps.stairsSide < 2
+                  ? buildingProps.sizeX
+                  : buildingProps.sizeZ) - 2,
+              )}
+              onChange={(stairsIndex) => setBuildingProps({ stairsIndex })}
+            />
+          </Option>
+          <Option
+            id="firewall"
+            label="Firewall"
+            checked={buildingProps.firewall}
+            onChange={(firewall) => setBuildingProps({ firewall })}
           />
-        </Option>
-        <Option
-          id="firewall"
-          label="Firewall"
-          checked={buildingProps.firewall}
-          onChange={(firewall) => setBuildingProps({ firewall })}
-        />
-        <Option
-          id="aircond"
-          label="AC units"
-          checked={buildingProps.aircond}
-          onChange={(aircond) => setBuildingProps({ aircond })}
-        >
-          <Control
-            label="Density"
-            value={buildingProps.aircondPercent}
-            min={0}
-            max={100}
-            display={buildingProps.aircondPercent + "%"}
-            onChange={(aircondPercent) => setBuildingProps({ aircondPercent })}
-          />
-        </Option>
-        <Option
-          id="firstFloorAcc"
-          label="First floor accents"
-          checked={buildingProps.firstFloorAcc}
-          onChange={(firstFloorAcc) => setBuildingProps({ firstFloorAcc })}
-        >
-          <Control
-            label="Density"
-            value={buildingProps.firstFloorAccPercent}
-            min={0}
-            max={100}
-            display={buildingProps.firstFloorAccPercent + "%"}
-            onChange={(firstFloorAccPercent) =>
-              setBuildingProps({ firstFloorAccPercent })
-            }
-          />
-        </Option>
-        <Option
-          id="roofAcc"
-          label="Roof accents"
-          checked={buildingProps.roofAcc}
-          onChange={(roofAcc) => setBuildingProps({ roofAcc })}
-        >
-          <Control
-            label="Density"
-            value={buildingProps.roofAccPercent}
-            min={0}
-            max={100}
-            display={buildingProps.roofAccPercent + "%"}
-            onChange={(roofAccPercent) => setBuildingProps({ roofAccPercent })}
-          />
-        </Option>
-      </Section>
+          <Option
+            id="aircond"
+            label="AC units"
+            checked={buildingProps.aircond}
+            onChange={(aircond) => setBuildingProps({ aircond })}
+          >
+            <Control
+              label="Density"
+              value={buildingProps.aircondPercent}
+              min={0}
+              max={100}
+              display={buildingProps.aircondPercent + "%"}
+              onChange={(aircondPercent) =>
+                setBuildingProps({ aircondPercent })
+              }
+            />
+          </Option>
+          <Option
+            id="firstFloorAcc"
+            label="First floor accents"
+            checked={buildingProps.firstFloorAcc}
+            onChange={(firstFloorAcc) => setBuildingProps({ firstFloorAcc })}
+          >
+            <Control
+              label="Density"
+              value={buildingProps.firstFloorAccPercent}
+              min={0}
+              max={100}
+              display={buildingProps.firstFloorAccPercent + "%"}
+              onChange={(firstFloorAccPercent) =>
+                setBuildingProps({ firstFloorAccPercent })
+              }
+            />
+          </Option>
+          <Option
+            id="roofAcc"
+            label="Roof accents"
+            checked={buildingProps.roofAcc}
+            onChange={(roofAcc) => setBuildingProps({ roofAcc })}
+          >
+            <Control
+              label="Density"
+              value={buildingProps.roofAccPercent}
+              min={0}
+              max={100}
+              display={buildingProps.roofAccPercent + "%"}
+              onChange={(roofAccPercent) =>
+                setBuildingProps({ roofAccPercent })
+              }
+            />
+          </Option>
+        </Section>
 
-      <Section title="Viewport">
-        <Option
-          id="showGrid"
-          label="Show grid"
-          checked={sceneProps.showGrid}
-          shortcut={hotkey("Show Grid")}
-          onChange={(showGrid) => setSceneProps({ showGrid })}
-        />
-        <Option
-          id="showHelpers"
-          label="Show helpers"
-          checked={sceneProps.showHelpers}
-          shortcut={hotkey("Show Helpers")}
-          onChange={(showHelpers) => setSceneProps({ showHelpers })}
-        />
-        <Option
-          id="autoUpdate"
-          label="Auto updates"
-          checked={sceneProps.autoUpdate}
-          shortcut={hotkey("Auto Updates")}
-          onChange={(autoUpdate) => setSceneProps({ autoUpdate })}
-        />
-        <Option
-          id="showInfoPanel"
-          label="Info panel"
-          checked={sceneProps.showInfoPanel}
-          shortcut={hotkey("Show Info Panel")}
-          onChange={(showInfoPanel) => setSceneProps({ showInfoPanel })}
-        />
-      </Section>
+        <Section title="Viewport">
+          <Option
+            id="showGrid"
+            label="Show grid"
+            checked={sceneProps.showGrid}
+            shortcut={hotkey("Show Grid")}
+            onChange={(showGrid) => setSceneProps({ showGrid })}
+          />
+          <Option
+            id="showHelpers"
+            label="Show helpers"
+            checked={sceneProps.showHelpers}
+            shortcut={hotkey("Show Helpers")}
+            onChange={(showHelpers) => setSceneProps({ showHelpers })}
+          />
+          <Option
+            id="autoUpdate"
+            label="Auto updates"
+            checked={sceneProps.autoUpdate}
+            shortcut={hotkey("Auto Updates")}
+            onChange={(autoUpdate) => setSceneProps({ autoUpdate })}
+          />
+          <Option
+            id="showInfoPanel"
+            label="Info panel"
+            checked={sceneProps.showInfoPanel}
+            shortcut={hotkey("Show Info Panel")}
+            onChange={(showInfoPanel) => setSceneProps({ showInfoPanel })}
+          />
+        </Section>
+      </div>
 
-      <div className="editor-actions">
+      <footer className="editor-actions">
         <Label htmlFor="seed">Seed</Label>
         <Input
           id="seed"
+          className="select-text"
           type="number"
           value={buildingProps.randomSeed}
           onChange={(event) =>
             setBuildingProps({ randomSeed: +event.target.value.slice(0, 5) })
           }
         />
-        <Button onClick={() => sendWorkerMessage(buildingProps)}>Build</Button>
+        <Button
+          disabled={sceneProps.autoUpdate}
+          onClick={() => sendWorkerMessage(buildingProps)}
+        >
+          Build
+        </Button>
         <div className="editor-actions-row">
           <Button variant="outline" onClick={randomizeSeed}>
             <Shuffle size={13} /> Randomize
+            <kbd className="ml-auto border px-1 text-[10px] text-muted-foreground">
+              {hotkey("Randomize")}
+            </kbd>
           </Button>
           <Button
             variant="outline"
@@ -324,7 +344,7 @@ function ConfigurationPanel() {
             <RotateCcw size={13} /> Reset
           </Button>
         </div>
-      </div>
+      </footer>
     </Card>
   );
 }
@@ -416,7 +436,7 @@ export default function Ui() {
         >
           Vlad Kobranov
         </a>
-        <span> / v1.0</span>
+        <span> / v{version}</span>
       </footer>
     </>
   );

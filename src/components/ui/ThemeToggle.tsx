@@ -35,7 +35,7 @@ export function ThemeToggle() {
             </Button>
           }
         />
-        <DropdownMenuContent side="top" align="end" className="w-40">
+        <DropdownMenuContent side="top" align="end" className="w-40 select-none">
           <DropdownMenuRadioGroup
             value={theme}
             onValueChange={(value: unknown) => {

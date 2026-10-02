@@ -46,7 +46,7 @@ export default function App() {
   }, [sendWorkerMessage]);
 
   return (
-    <div className="app-shell w-dvw h-dvh relative">
+    <div className="app-shell w-dvw h-dvh relative select-none">
       {isLoading && <LoadingOverlay message="Initializing scene" />}
       <Scene />
       <Ui />
