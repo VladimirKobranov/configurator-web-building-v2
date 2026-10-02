@@ -14,7 +14,7 @@ onmessage = async (event) => {
   const sizeZ = payload?.sizeZ || 10;
   const offset = payload?.offset || 0;
   const seed = payload?.randomSeed || 12345;
-  const brandmauer = payload?.brandmauer || false;
+  const firewall = payload?.firewall || false;
   const aircond = payload?.aircond ?? false;
   const aircondPercent = payload?.aircondPercent ?? 20;
   const firstFloorAcc = payload?.firstFloorAcc ?? false;
@@ -26,7 +26,7 @@ onmessage = async (event) => {
   const stairsSide = payload?.stairsSide ?? 0;
 
   console.log(
-    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, brandmauer ${brandmauer}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}, stairsIndex ${stairsIndex}, stairsSide ${stairsSide}`,
+    `worker: building house with dimensions ${sizeX}x${sizeY}x${sizeZ}, offset ${offset}, seed ${seed}, firewall ${firewall}, aircond ${aircond}, aircondPercent ${aircondPercent}, firstFloorAcc ${firstFloorAcc}, firstFloorAccPercent ${firstFloorAccPercent}, roofAcc ${roofAcc}, roofAccPercent ${roofAccPercent}, stairs ${stairs}, stairsIndex ${stairsIndex}, stairsSide ${stairsSide}`,
   );
 
   const rawHouse = buildHouse(
@@ -34,7 +34,7 @@ onmessage = async (event) => {
     sizeY,
     sizeZ,
     seed,
-    brandmauer,
+    firewall,
     aircond,
     aircondPercent,
     firstFloorAcc,
@@ -123,7 +123,7 @@ function generateWallSide(
   rotationY: number,
   sideIndex: number,
   baseSeed: number,
-  brandmauer: boolean,
+  firewall: boolean,
   stairIndex: number = -1,
 ) {
   const arr = [];
@@ -142,10 +142,9 @@ function generateWallSide(
       // Pick random variant index 0-3
       const variant = Math.floor(rand() * 4);
 
-      const isSideBrandmauer =
-        brandmauer && (sideIndex === 2 || sideIndex === 3);
+      const isFirewallSide = firewall && (sideIndex === 2 || sideIndex === 3);
 
-      if (isSideBrandmauer) {
+      if (isFirewallSide) {
         if (y === heightY - 1) {
           type = "roof_wall_brandmauer";
         } else {
@@ -205,7 +204,7 @@ function buildHouse(
   sizeY: number,
   sizeZ: number,
   baseSeed: number,
-  brandmauer: boolean,
+  firewall: boolean,
   aircond: boolean,
   aircondPercent: number,
   firstFloorAcc: boolean,
@@ -243,7 +242,7 @@ function buildHouse(
     -Math.PI / 2,
     0,
     baseSeed,
-    brandmauer,
+    firewall,
     usedStairSide === 0 ? usedStairIndex : -1,
   );
   const south = generateWallSide(
@@ -254,7 +253,7 @@ function buildHouse(
     Math.PI / 2,
     1,
     baseSeed,
-    brandmauer,
+    firewall,
     usedStairSide === 1 ? usedStairIndex : -1,
   );
   const west = generateWallSide(
@@ -265,7 +264,7 @@ function buildHouse(
     0,
     2,
     baseSeed,
-    brandmauer,
+    firewall,
     usedStairSide === 2 ? usedStairIndex : -1,
   );
   const east = generateWallSide(
@@ -276,7 +275,7 @@ function buildHouse(
     Math.PI,
     3,
     baseSeed,
-    brandmauer,
+    firewall,
     usedStairSide === 3 ? usedStairIndex : -1,
   );
 
@@ -321,7 +320,7 @@ function buildHouse(
       if (y === 0) type = "first_floor_corner";
       else if (y === sizeY - 1) type = "roof_corner";
 
-      if (brandmauer) {
+      if (firewall) {
         if (y === 0) {
           // first floor
           if (x === sizeX - 1 && z === 0) {
@@ -367,9 +366,8 @@ function buildHouse(
       // Randomly place air conditioner on main floor windows
       const isFirstFloor = y === 0;
       const isLastFloor = y === sizeY - 1;
-      const isBrandmauer =
-        brandmauer &&
-        (structural.sideIndex === 2 || structural.sideIndex === 3);
+      const isFirewall =
+        firewall && (structural.sideIndex === 2 || structural.sideIndex === 3);
 
       // Check if ANY item at this position is a stair
       const hasStair = atPos.some((item) => item.type.startsWith("stairs_"));
@@ -377,7 +375,7 @@ function buildHouse(
       if (
         !isFirstFloor &&
         !isLastFloor &&
-        !isBrandmauer &&
+        !isFirewall &&
         !hasStair &&
         aircond
       ) {
@@ -398,7 +396,7 @@ function buildHouse(
       }
 
       // Randomly place first floor accessories
-      if (y === 0 && !isBrandmauer && !hasStair && firstFloorAcc) {
+      if (y === 0 && !isFirewall && !hasStair && firstFloorAcc) {
         // Use a different salt for first floor accessories
         const accSeed = getCoordSeed(baseSeed + 456, x, y, z);
         const accRand = mulberry32(accSeed);

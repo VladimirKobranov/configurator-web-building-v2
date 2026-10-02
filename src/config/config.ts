@@ -18,11 +18,11 @@ export const orbitControlsConfig = {
 export const gridConfig = {
   cellSize: 0.5,
   cellThickness: 1,
-  cellColor: "#6f6f6f",
+  cellColor: "#b6b6b6",
 
   sectionSize: 2,
   sectionThickness: 1.5,
-  sectionColor: "#9d4b4b",
+  sectionColor: "#81b9d9",
 
   fadeDistance: 50,
   fadeStrength: 5,
@@ -55,7 +55,7 @@ export const buildingConfig = {
   firstFloorAccPercent: 50,
   roofAcc: true,
   roofAccPercent: 50,
-  brandmauer: false,
+  firewall: false,
   stairs: true,
   stairsIndex: 4,
   stairsSide: 1,

@@ -8,6 +8,7 @@ import {
   Environment,
 } from "@react-three/drei";
 import { useAppStore } from "@/store";
+import { useThemeStore } from "@/store/theme";
 import { gridConfig, orbitControlsConfig } from "@/config/config";
 import CameraDebugger from "@/components/three/CameraDebugger";
 import { InstancedBuilding } from "@/components/three/Building";
@@ -20,11 +21,14 @@ export default function Scene() {
   const building = useAppStore((s) => s.building);
   const isScattered = useAppStore((s) => s.isScattered);
   const sceneProps = useAppStore((s) => s.sceneProps);
+  const dark = useThemeStore(
+    (s) => s.theme === "dark" || (s.theme === "system" && s.systemDark),
+  );
 
   const [dpr, setDpr] = useState(1.5);
 
   return (
-    <Canvas className="bg-neutral-800" dpr={dpr} shadows="soft">
+    <Canvas className="scene-canvas" dpr={dpr} shadows="soft">
       {/* environment */}
       <Environment
         preset="city"
@@ -36,7 +40,13 @@ export default function Scene() {
       <Lights />
 
       {/* grid */}
-      {sceneProps.showGrid && <Grid {...gridConfig} />}
+      {sceneProps.showGrid && (
+        <Grid
+          {...gridConfig}
+          cellColor={dark ? "#545454" : gridConfig.cellColor}
+          sectionColor={dark ? "#51738a" : gridConfig.sectionColor}
+        />
+      )}
 
       {/* camera */}
       <PerspectiveCamera makeDefault {...camProps} />

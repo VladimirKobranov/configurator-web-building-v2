@@ -36,7 +36,7 @@ export interface BuildingProps {
   stairs: boolean;
   stairsIndex: number;
   stairsSide: number;
-  brandmauer: boolean;
+  firewall: boolean;
   randomSeed: number;
 }
 

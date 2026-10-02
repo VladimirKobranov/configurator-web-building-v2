@@ -7,7 +7,7 @@ A high-performance, procedural 3D building configurator built with **React**, **
 ## 🚀 Key Features
 
 - **Procedural Generation**: Dynamically generate buildings with adjustable dimensions (Width, Height, Depth) using a stable `randomSeed` system.
-- **Structural Logic**: Intelligent placement rules for stairs, firewalls (brandmauer), and architectural components.
+- **Structural Logic**: Intelligent placement rules for stairs, firewalls, and architectural components.
 - **Dynamic Accessories**: Toggle and adjust the density of air conditioners, roof accessories, and first-floor details.
 - **Multithreaded Performance**: Complex generation logic is offloaded to a **Web Worker** to ensure a smooth, jank-free UI.
 - **Interactive 3D Scene**: Full OrbitControls support with auto-rotation, grid helpers, and infinite floor planes.

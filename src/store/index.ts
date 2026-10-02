@@ -66,8 +66,8 @@ export const useAppStore = create<AppState>()((set, get) => ({
         ...props,
       } as BuildingProps;
 
-      // Rule: If brandmauer is true, stairsSide cannot be 2 or 3
-      if (updatedProps.brandmauer && updatedProps.stairsSide > 1) {
+      // Rule: If firewall is true, stairsSide cannot be 2 or 3
+      if (updatedProps.firewall && updatedProps.stairsSide > 1) {
         updatedProps.stairsSide = 0; // Reset to a safe side
       }
 
@@ -91,14 +91,14 @@ export const useAppStore = create<AppState>()((set, get) => ({
       Math.floor(rand() * (max - min + 1)) + min;
     const randomBool = () => rand() > 0.5;
 
-    const newBrandmauer = randomBool();
+    const newFirewall = randomBool();
     const newSizeX = randomInRange(props.sizeXMin, props.sizeXMax);
     const newSizeY = randomInRange(props.sizeYMin, props.sizeYMax);
     const newSizeZ = randomInRange(props.sizeZMin, props.sizeZMax);
 
-    // Rule: side 2 and 3 are brandmauer sides.
-    // If brandmauer is ON, stairs can only be on side 0 or 1.
-    const newStairsSide = newBrandmauer
+    // Rule: side 2 and 3 are firewall sides.
+    // If firewall is ON, stairs can only be on side 0 or 1.
+    const newStairsSide = newFirewall
       ? randomInRange(0, 1)
       : randomInRange(0, 3);
 
@@ -116,7 +116,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
       firstFloorAccPercent: randomInRange(0, 100),
       roofAcc: randomBool(),
       roofAccPercent: randomInRange(0, 100),
-      brandmauer: newBrandmauer,
+      firewall: newFirewall,
       stairs: randomBool(),
       stairsSide: newStairsSide,
       stairsIndex: newStairsIndex,

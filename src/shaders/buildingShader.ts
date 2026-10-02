@@ -43,7 +43,9 @@ export const buildingShader = {
   },
 };
 
-export const patchBuildingMaterial = (shader: any) => {
+export const patchBuildingMaterial = (
+  shader: Parameters<THREE.Material["onBeforeCompile"]>[0],
+) => {
   shader.uniforms.wirelineColor = buildingShader.uniforms.wirelineColor;
   shader.uniforms.wirelineThickness = buildingShader.uniforms.wirelineThickness;
 
