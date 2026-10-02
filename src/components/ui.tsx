@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { ChevronDown, RotateCcw, Shuffle, X } from "lucide-react";
+import { ChevronDown, CircleHelp, RotateCcw, Shuffle, X } from "lucide-react";
+import { Popover } from "@base-ui/react/popover";
 import { buildingConfig, hotkeysConfig } from "@/config/config";
 import { useAppStore } from "@/store";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,27 @@ import { version } from "../../package.json";
 
 const hotkey = (label: string) =>
   hotkeysConfig.find((item) => item.label === label)?.key;
+
+function InfoTip({ label, text }: { label: string; text: string }) {
+  return (
+    <Popover.Root>
+      <Popover.Trigger
+        openOnHover
+        aria-label={`About ${label}`}
+        className="inline-flex size-4 items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-1 focus-visible:outline-ring"
+      >
+        <CircleHelp size={13} aria-hidden="true" />
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner side="right" sideOffset={8} className="z-50">
+          <Popover.Popup className="max-w-60 border border-border bg-popover p-2 text-[11px] leading-relaxed text-popover-foreground shadow-sm outline-none select-none">
+            <Popover.Description>{text}</Popover.Description>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -34,6 +56,7 @@ function Control({
   max,
   step = 1,
   display,
+  tip,
   onChange,
 }: {
   label: string;
@@ -42,12 +65,16 @@ function Control({
   max: number;
   step?: number;
   display?: string;
+  tip?: string;
   onChange: (value: number) => void;
 }) {
   return (
     <div className="editor-control">
       <div className="editor-control-label">
-        <span>{label}</span>
+        <span className="inline-flex items-center gap-1">
+          {label}
+          {tip && <InfoTip label={label} text={tip} />}
+        </span>
         <output>{display ?? value}</output>
       </div>
       <Slider
@@ -69,6 +96,7 @@ function Option({
   label,
   checked,
   shortcut,
+  tip,
   onChange,
   children,
 }: {
@@ -76,6 +104,7 @@ function Option({
   label: string;
   checked: boolean;
   shortcut?: string;
+  tip?: string;
   onChange: (value: boolean) => void;
   children?: ReactNode;
 }) {
@@ -84,6 +113,7 @@ function Option({
       <div className="editor-toggle-row">
         <Checkbox id={id} checked={checked} onCheckedChange={onChange} />
         <label htmlFor={id}>{label}</label>
+        {tip && <InfoTip label={label} text={tip} />}
         {shortcut && (
           <kbd className="border px-1 text-[10px] text-muted-foreground">
             {shortcut}
@@ -282,6 +312,7 @@ function ConfigurationPanel() {
           <Option
             id="showGrid"
             label="Show grid"
+            tip="Shows a ground grid to help judge the building's size and position."
             checked={sceneProps.showGrid}
             shortcut={hotkey("Show Grid")}
             onChange={(showGrid) => setSceneProps({ showGrid })}
@@ -289,6 +320,7 @@ function ConfigurationPanel() {
           <Option
             id="showHelpers"
             label="Show helpers"
+            tip="Shows the directional light and shadow camera guides."
             checked={sceneProps.showHelpers}
             shortcut={hotkey("Show Helpers")}
             onChange={(showHelpers) => setSceneProps({ showHelpers })}
@@ -296,6 +328,7 @@ function ConfigurationPanel() {
           <Option
             id="autoUpdate"
             label="Auto updates"
+            tip="Rebuilds the model after every building change. Turn this off to use Build manually."
             checked={sceneProps.autoUpdate}
             shortcut={hotkey("Auto Updates")}
             onChange={(autoUpdate) => setSceneProps({ autoUpdate })}
@@ -303,6 +336,7 @@ function ConfigurationPanel() {
           <Option
             id="showInfoPanel"
             label="Info panel"
+            tip="Shows details for the building element you select in the scene."
             checked={sceneProps.showInfoPanel}
             shortcut={hotkey("Show Info Panel")}
             onChange={(showInfoPanel) => setSceneProps({ showInfoPanel })}
@@ -321,12 +355,33 @@ function ConfigurationPanel() {
             setBuildingProps({ randomSeed: +event.target.value.slice(0, 5) })
           }
         />
-        <Button
-          disabled={sceneProps.autoUpdate}
-          onClick={() => sendWorkerMessage(buildingProps)}
-        >
-          Build
-        </Button>
+        {sceneProps.autoUpdate ? (
+          <Popover.Root>
+            <Popover.Trigger
+              openOnHover
+              nativeButton={false}
+              render={<span className="block" />}
+              aria-label="Build disabled: turn off Auto updates to build manually"
+            >
+              <Button disabled className="w-full">
+                Build
+              </Button>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Positioner side="top" sideOffset={8} className="z-50">
+                <Popover.Popup className="max-w-60 border border-border bg-popover p-2 text-[11px] leading-relaxed text-popover-foreground shadow-sm outline-none select-none">
+                  <Popover.Description>
+                    Turn off Auto updates to build manually.
+                  </Popover.Description>
+                </Popover.Popup>
+              </Popover.Positioner>
+            </Popover.Portal>
+          </Popover.Root>
+        ) : (
+          <Button onClick={() => sendWorkerMessage(buildingProps)}>
+            Build
+          </Button>
+        )}
         <div className="editor-actions-row">
           <Button variant="outline" onClick={randomizeSeed}>
             <Shuffle size={13} /> Randomize
